@@ -5,11 +5,11 @@ import { Context, Telegraf } from 'telegraf';
 @Update()
 @Injectable()
 export class TelegramService {
-  constructor(@InjectBot('bot') private readonly bot: Telegraf<Context>) {}
+    constructor(@InjectBot('bot') private readonly bot: Telegraf<Context>) {}
 
-  @Start()
-  async start(@Ctx() ctx: Context) {
-    console.log('Working!');
-    ctx.reply('Bot is working!');
-  }
+    @Start()
+    async start(@Ctx() ctx: Context) {
+        console.log('Working!');
+        ctx.reply('Bot is working!');
+    }
 }
