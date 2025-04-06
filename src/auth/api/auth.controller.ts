@@ -94,7 +94,7 @@ export class AuthController {
     googleAuthRedirect(@Req() req: ReqGoogleUser, @Res() res: Response) {
         const token = req.user.accessToken;
         
-        return res.redirect(`http://localhost:5000/auth/success-google?token=${token}`);
+        return res.redirect(`${process.env.THIS_URL}/auth/success-google?token=${token}`);
     }
 
     @Get('success-google')

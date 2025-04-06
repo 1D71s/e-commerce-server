@@ -9,7 +9,10 @@ export class ProductEntity {
     @Column({ type: 'varchar', length: 255 })
     name: string;
 
-    @Column({ type: 'text', nullable: true })
+    @Column({ length: 255, nullable: false, default: "default" })
+    primaryPhoto: string;
+
+    @Column({ nullable: true })
     description: string;
 
     @ManyToOne(() => CategoryEntity, (category) => category.products)
