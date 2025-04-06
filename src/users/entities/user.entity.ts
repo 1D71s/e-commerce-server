@@ -20,7 +20,7 @@ export class UserEntity {
     @Column({ nullable: true })
     provider?: Provider;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, select: false })
     password: string;
 
     @OneToMany(() => TokenEntity, (token) => token.user)

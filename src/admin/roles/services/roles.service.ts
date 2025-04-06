@@ -4,11 +4,12 @@ import { Roles } from '../enums/roles.enum';
 import { ChangeRoleDto } from '../dtos/requests/change-role.dto';
 import { JwtPayloadUserInterface } from 'src/auth/interfaces/jwt-payload-user.interface';
 import { MessageInterface } from 'src/common/dto/responses/message.response';
+import { UserRepository } from 'src/users/repositories/user.repository';
 
 @Injectable()
 export class RolesService {
     constructor(
-        private readonly userService: UsersService,
+        private readonly userRepository: UserRepository,
     ) {}
 
     async updateRole(query: ChangeRoleDto, user: JwtPayloadUserInterface): Promise<MessageInterface> {
@@ -19,17 +20,19 @@ export class RolesService {
             throw new ForbiddenException('Access denied');
         }
 
-        const userForNewRole = await this.userService.getOneById(userId)
+        const userForNewRole = await this.userRepository.findOne({ where: { id: userId } })
 
         if (!userForNewRole) {
             throw new NotFoundException('Access denied');
         }
 
-        const update = await this.userService.update(userId, {
+        const updateUser = this.userRepository.merge(userForNewRole, {
             role: newRole,
         });
 
-        if (!update) {
+        const savedUser = await this.userRepository.save(updateUser);
+
+        if (!savedUser) {
             throw new BadRequestException('Role not updated');
         }
 

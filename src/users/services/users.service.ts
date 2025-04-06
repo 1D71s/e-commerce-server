@@ -1,78 +1,103 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { UserEntity } from '../entities/user.entity';
+import { BadRequestException, ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { UserRepository } from '../repositories/user.repository';
+import { genSaltSync, hashSync } from 'bcrypt';
+import { MessageInterface } from 'src/common/dto/responses/message.response';
+import { MailerService } from 'src/mailer/services/mailer.service';
+import { ResetTokenRepository } from '../repositories/reset-user.repository';
+import { ResetToken } from '../entities/reset-token.entity';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class UsersService {
     constructor(
-        @InjectRepository(UserEntity) private readonly userRepository: Repository<UserEntity>
+        private readonly userRepository: UserRepository,
+        private readonly mailerService: MailerService,
+        private readonly resetTokenRepository: ResetTokenRepository,
     ) {}
 
-    async getOneByEmail(email: string, getPassword?: boolean): Promise<UserEntity> {
-        const user = await this.userRepository.findOne({
-            where: { email }
-        });          
+    async sendPasswordUpdateEmail(email: string, agent: string): Promise<MessageInterface> {
+        const user = await this.userRepository.findOneByEmail(email);
 
-        if (user && getPassword) {
-            return user
+        if (!user || user.provider) {
+            throw new NotFoundException("User was not found!")
         }
 
-        return this.returnWithoutPassword(user);
-    }
+        const checkExistReset = await this.resetTokenRepository.findByUserIdAndAgent(user.id, agent)
 
-    async getOneById(id: number): Promise<UserEntity> {
-        const user = await this.userRepository.findOne({
-            where: { id },
-            relations: ['tokens'],
-        });          
+        if (checkExistReset && checkExistReset.some(item => item.exp > new Date())) {
+            throw new ConflictException('Reset token already exists and is still valid.');
+        }
+
+        await this.resetTokenRepository.deleteByConditions({ userId: user.id, userAgent: agent });
+
+        const token = this.createResetToken(user.id, agent);
         
-        return this.returnWithoutPassword(user);
-    }
-    
-    async create(user: Partial<UserEntity>): Promise<UserEntity> {
-        const newUser = this.userRepository.create(user);
-        const savedUser = await this.userRepository.save(newUser);
-        
-        return this.returnWithoutPassword(savedUser);
-    }
+        const title = "Оновлення пароля на вашому обліковому записі";
+        const html = `
+            <p>Привіт!</p>
+            <p>Ви отримали цей лист, оскільки ініціювали оновлення пароля для вашого облікового запису.</p>
+            <p>Щоб завершити процес, будь ласка, перейдіть за наступним посиланням:</p>
+            <p><a href="${process.env.CLIENT_LINK}/password/update/${token}" style="color: #007bff; text-decoration: none;">
+                Оновити пароль
+            </a></p>
+            <p>Якщо ви не робили цей запит, просто ігноруйте цей лист. Ваш пароль не буде змінено.</p>
+            <p>З найкращими побажаннями,</p>
+            <p>Ваша команда підтримки</p>
+        `
 
-    async update(id: number, user: Partial<UserEntity>): Promise<UserEntity> {
-        const existingUser = await this.getOneById(id);
-        if (!existingUser) {
-            throw new NotFoundException('User not found');
-        }
-    
-        this.userRepository.merge(existingUser, user);
-    
-        const updatedUser = await this.userRepository.save(existingUser);
-    
-        return this.returnWithoutPassword(updatedUser);
-    }    
-    
-    async getAllUsers(): Promise<UserEntity[]> {
-        return this.userRepository.find();
+        await this.mailerService.sendEmail(email, title, html)
+        return { message: "The code has been senе to your email" }
     }
 
-    async changePassword(userId: number, hashedPassword: string): Promise<UserEntity> {
-        const user = await this.getOneById(userId);
+    async changePassword(token: string, password: string): Promise<MessageInterface> {
+        const checkToken = await this.validateToken(token);
 
-        if (!user) {
-            throw new NotFoundException(`User with id ${userId} not found`);
+        if (!checkToken) {
+            throw new UnauthorizedException("Token is not valid")
         }
 
-        user.password = hashedPassword;
+        const hashPassword = this.hashPassword(password);
 
+        const user = await this.userRepository.findOne({ where: { id: checkToken.userId } });
+        user.password = hashPassword;
         const updatedUser = await this.userRepository.save(user);
 
-        return this.returnWithoutPassword(updatedUser);
+
+        if (!updatedUser) {
+            throw new BadRequestException();
+        }
+        await this.resetTokenRepository.deleteByConditions({ userId: user.id });
+
+        return { message: "Password has been updated." }
     }
 
-    private returnWithoutPassword(user: UserEntity): UserEntity  {
-        if (user) {
-            delete user.password;
+    private async createResetToken(userId: number, userAgent: string): Promise<ResetToken> {
+        const token = uuidv4();
     
-            return user;
-        }
+        const expirationDate = new Date();
+        expirationDate.setHours(expirationDate.getMinutes() + 2);
+    
+        const resetToken = new ResetToken();
+        resetToken.token = token;
+        resetToken.exp = expirationDate;
+        resetToken.userId = userId;
+        resetToken.userAgent = userAgent;
+    
+        return await this.resetTokenRepository.save(resetToken);
+    }
+    
+    private async validateToken(token: string): Promise<ResetToken> {
+        const resetToken = await this.resetTokenRepository.findOneByToken(token);
+    
+        if (!resetToken) throw new NotFoundException("Token was not found!");
+    
+        const currentDate = new Date();
+        if (currentDate > resetToken.exp) throw new UnauthorizedException("Token is not valid!")
+    
+        return resetToken;
+    }
+
+    private hashPassword(password: string): string {
+        return hashSync(password, genSaltSync(10))
     }
 }

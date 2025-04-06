@@ -1,27 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { TokenEntity } from 'src/sessions/entities/token.entity';
-import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { add } from 'date-fns';
+import { TokenRepository } from '../repositories/token.repository';
+import { TokenEntity } from 'src/sessions/entities/token.entity';
 
 @Injectable()
 export class SessionsService {
     constructor(
-        @InjectRepository(TokenEntity) private readonly tokenRepository: Repository<TokenEntity>,
-    ) { }
-    
-    async getOneByToken(token: string): Promise<TokenEntity> {
-        return this.tokenRepository.findOne({ where: { token } });
-    }
-
-    async deleteToken(session: TokenEntity): Promise<void> {
-        await this.tokenRepository.delete({ id: session.id });
-    }
+        private readonly tokenRepository: TokenRepository,
+    ) {}
 
     public async getOrUpdateRefreshToken(id: number, agent: string): Promise<TokenEntity> {
-        const existingToken = await this.tokenRepository.findOne({
-            where: { userId: id, userAgent: agent },
+        const existingToken = await this.tokenRepository.getBy({
+            userId: id,
+            userAgent: agent,
         });
 
         if (existingToken) {
