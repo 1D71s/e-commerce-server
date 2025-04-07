@@ -11,5 +11,5 @@ export class ResetPasswordDto {
     @MinLength(6)
     @Validate(IsPasswordsMatchingConstraint)
     @IsNotEmpty()
-    passwordRepeat: string;
+    repeatPassword: string;
 }

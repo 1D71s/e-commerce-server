@@ -15,7 +15,7 @@ async function bootstrap() {
     origin: 'http://localhost:3000',
   });
 
-
+  app.setGlobalPrefix("api")
   app.use(cookieParser());
 
   app.useGlobalPipes(new ValidationPipe());

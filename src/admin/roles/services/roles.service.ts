@@ -1,8 +1,7 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { UsersService } from 'src/users/services/users.service';
 import { Roles } from '../enums/roles.enum';
 import { ChangeRoleDto } from '../dtos/requests/change-role.dto';
-import { JwtPayloadUserInterface } from 'src/auth/interfaces/jwt-payload-user.interface';
+import { IJwtPayload } from 'src/auth/interfaces/jwt-payload-user.interface';
 import { MessageInterface } from 'src/common/dto/responses/message.response';
 import { UserRepository } from 'src/users/repositories/user.repository';
 
@@ -12,7 +11,7 @@ export class RolesService {
         private readonly userRepository: UserRepository,
     ) {}
 
-    async updateRole(query: ChangeRoleDto, user: JwtPayloadUserInterface): Promise<MessageInterface> {
+    async updateRole(query: ChangeRoleDto, user: IJwtPayload): Promise<MessageInterface> {
         const { userId, newRole } = query;
         const checkAccess = this.checkRoleHierarchy(user.role ,newRole);
 
@@ -20,7 +19,7 @@ export class RolesService {
             throw new ForbiddenException('Access denied');
         }
 
-        const userForNewRole = await this.userRepository.findOne({ where: { id: userId } })
+        const userForNewRole = await this.userRepository.findById(userId)
 
         if (!userForNewRole) {
             throw new NotFoundException('Access denied');

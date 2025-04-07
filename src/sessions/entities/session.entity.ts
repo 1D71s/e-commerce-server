@@ -1,8 +1,9 @@
 import { UserEntity } from 'src/users/entities/user.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { ISession } from '../interfaces/session.interface';
 
-@Entity('tokens')
-export class TokenEntity {
+@Entity('sessions')
+export class SessionEntity implements ISession {
     @PrimaryGeneratedColumn('increment')
     id: number;
 
@@ -12,12 +13,9 @@ export class TokenEntity {
     @Column({ type: 'timestamp' })
     exp: Date;
 
-    @ManyToOne(() => UserEntity, (user) => user.tokens, { onDelete: 'CASCADE' })
-    @JoinColumn({ name: 'userId' })
+    @ManyToOne(() => UserEntity, (user) => user.sessions, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'user' })
     user: UserEntity;
-
-    @Column()
-    userId: number;
 
     @Column({ name: 'user_agent' })
     userAgent: string;

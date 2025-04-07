@@ -1,7 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
+import { IResetToken } from '../interfaces/reset-token.interface';
 
 @Entity('reset_token')  
-export class ResetToken {
+export class ResetToken implements IResetToken {
   
     @PrimaryGeneratedColumn('increment')
     id: number;

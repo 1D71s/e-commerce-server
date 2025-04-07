@@ -1,9 +1,13 @@
-import { TokenEntity } from "src/sessions/entities/token.entity";
+import { ISession } from "src/sessions/interfaces/session.interface";
 
-export interface AccessToken {
+export interface IAccessToken {
     accessToken: string;
 }
 
-export interface Tokens extends AccessToken {
-    refreshToken: TokenEntity;
+export interface ITokens extends IAccessToken  {
+    refreshToken: string;
+}
+
+export interface ISessionAndAccessToken extends IAccessToken {
+    session: ISession;
 }

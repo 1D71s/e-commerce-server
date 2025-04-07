@@ -2,13 +2,13 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import * as process from "process";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
-import { JwtPayloadUserInterface } from '../interfaces/jwt-payload-user.interface';
-import { UserRepository } from 'src/users/repositories/user.repository';
+import { IJwtPayload } from '../interfaces/jwt-payload-user.interface';
+import { SessionRepository } from 'src/sessions/repositories/session.repository';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
     constructor(
-        private readonly userRepository: UserRepository,
+        private readonly sessionRepository: SessionRepository,
     ) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -17,20 +17,17 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         });
     }
 
-    async validate(payload: JwtPayloadUserInterface) {
-        const user = await this.userRepository.findOne({
-            where: { id: payload.id },
-            relations: ['tokens']
+    async validate(payload: IJwtPayload) {
+        const { sessionToken } = payload;
+        const session = await this.sessionRepository.getOne({
+            where: { token: sessionToken },
+            relations: ['user'],
         });
 
-        if (!user) {
-            throw new UnauthorizedException("Access denied. User account not found.");
+        if (!session || session.exp < new Date()) {
+            throw new UnauthorizedException("Token was not found or is not valid.");
         }
 
-        if (!user.tokens.some(session => session.token === payload.session)) {
-            throw new UnauthorizedException("Session does not exist.");
-        }
-
-        return user
+        return session.user;
     }
 }

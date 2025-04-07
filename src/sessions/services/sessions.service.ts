@@ -1,34 +1,34 @@
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { add } from 'date-fns';
-import { TokenRepository } from '../repositories/token.repository';
-import { TokenEntity } from 'src/sessions/entities/token.entity';
+import { SessionRepository } from '../repositories/session.repository';
+import { SessionEntity } from 'src/sessions/entities/session.entity';
+import { UserEntity } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class SessionsService {
     constructor(
-        private readonly tokenRepository: TokenRepository,
+        private readonly sessionRepository: SessionRepository,
     ) {}
 
-    public async getOrUpdateRefreshToken(id: number, agent: string): Promise<TokenEntity> {
-        const existingToken = await this.tokenRepository.getBy({
-            userId: id,
-            userAgent: agent,
+    public async getOrUpdateRefreshToken(user: UserEntity, agent: string): Promise<SessionEntity> {
+        const existingToken = await this.sessionRepository.getOne({
+            where: { user: { id: user.id }, userAgent: agent },
         });
 
         if (existingToken) {
             existingToken.token = uuidv4();
             existingToken.exp = add(new Date(), { days: 15 });
-            return this.tokenRepository.save(existingToken);
+            return this.sessionRepository.save(existingToken);
         }
 
-        const newToken = this.tokenRepository.create({
+        const newToken = this.sessionRepository.create({
             token: uuidv4(),
             exp: add(new Date(), { months: 1 }),
-            userId: id,
+            user,
             userAgent: agent,
         });
 
-        return this.tokenRepository.save(newToken);
+        return this.sessionRepository.save(newToken);
     }
 }

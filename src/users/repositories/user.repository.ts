@@ -1,7 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository, FindOneOptions, FindManyOptions } from "typeorm";
+import { Repository } from "typeorm";
 import { UserEntity } from "../entities/user.entity";
+import { IFindUserOptions } from "../interfaces/find-user-options.interface";
 
 @Injectable()
 export class UserRepository {
@@ -10,38 +11,45 @@ export class UserRepository {
         private readonly userRepository: Repository<UserEntity>
     ) {}
 
-    private prepareSelectFields(includePassword: boolean): (keyof UserEntity)[] {
+    async findById(id: number, options?: IFindUserOptions): Promise<UserEntity | null> {
+        const { includePassword = false, relations = [] } = options || {};
+
+        const query = this.userRepository.createQueryBuilder('user')
+            .where('user.id = :id', { id });
+
         if (includePassword) {
-            return [];
+            query.addSelect('user.password');
         }
-        return ['id', 'email', 'name', 'createdAt'];
+
+        for (const relation of relations) {
+            query.leftJoinAndSelect(`user.${relation}`, relation);
+        }
+
+        return query.getOne();
     }
 
-    async findOne(options: FindOneOptions<UserEntity>, includePassword = false): Promise<UserEntity | null> {
-        const { where, relations } = options;
-        const select = this.prepareSelectFields(includePassword);
+    async findByEmail(email: string, options?: IFindUserOptions): Promise<UserEntity | null> {
+        const { includePassword = false, relations = [] } = options || {};
 
-        return this.userRepository.findOne({
-            where,
-            relations,
-            select,
-        });
-    }
+        const query = this.userRepository.createQueryBuilder('user')
+            .where('user.email = :email', { email });
 
-    async findOneByEmail(email: string, includePassword = false): Promise<UserEntity | null> {
-        const select = this.prepareSelectFields(includePassword);
+        if (includePassword) {
+            query.addSelect('user.password');
+        }
 
-        return this.userRepository.findOne({
-            where: { email },
-            select,
-        });
+        for (const relation of relations) {
+            query.leftJoinAndSelect(`user.${relation}`, relation);
+        }
+
+        return query.getOne();
     }
 
     async findAll(): Promise<UserEntity[]> {
         return this.userRepository.find({
-            select: ['id', 'email', 'name', 'createdAt', 'updatedAt'] as (keyof UserEntity)[]
+            select: ['id', 'email', 'name', 'createdAt', 'role', 'provider'],
         });
-    }
+    }    
 
     create(user: Partial<UserEntity>): UserEntity {
         return this.userRepository.create(user);

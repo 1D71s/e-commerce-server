@@ -16,7 +16,7 @@ export class UsersService {
     ) {}
 
     async sendPasswordUpdateEmail(email: string, agent: string): Promise<MessageInterface> {
-        const user = await this.userRepository.findOneByEmail(email);
+        const user = await this.userRepository.findByEmail(email);
 
         if (!user || user.provider) {
             throw new NotFoundException("User was not found!")
@@ -58,7 +58,7 @@ export class UsersService {
 
         const hashPassword = this.hashPassword(password);
 
-        const user = await this.userRepository.findOne({ where: { id: checkToken.userId } });
+        const user = await this.userRepository.findById(checkToken.userId);
         user.password = hashPassword;
         const updatedUser = await this.userRepository.save(user);
 

@@ -1,10 +1,11 @@
-import { TokenEntity } from "src/sessions/entities/token.entity";
+import { SessionEntity } from "src/sessions/entities/session.entity";
 import { Entity, PrimaryGeneratedColumn, CreateDateColumn, Column, OneToMany } from "typeorm";
-import { Provider } from "./enums/provider.enum";
+import { Provider } from "../interfaces/enums/provider.enum";
 import { Roles } from "src/admin/roles/enums/roles.enum";
+import { IUser } from "../interfaces/user.interface";
 
 @Entity('users')
-export class UserEntity {
+export class UserEntity implements IUser {
     @PrimaryGeneratedColumn('increment')
     id: number;
 
@@ -23,8 +24,8 @@ export class UserEntity {
     @Column({ nullable: true, select: false })
     password: string;
 
-    @OneToMany(() => TokenEntity, (token) => token.user)
-    tokens: TokenEntity[];
+    @OneToMany(() => SessionEntity, (session) => session.user)
+    sessions: SessionEntity[];
     
     @CreateDateColumn()
     createdAt: Date;

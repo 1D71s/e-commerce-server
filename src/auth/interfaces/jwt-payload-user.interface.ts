@@ -1,8 +1,8 @@
 import { Roles } from "src/admin/roles/enums/roles.enum";
 
-export interface JwtPayloadUserInterface {
+export interface IJwtPayload {
     id: number;
     email: string;
-    session: string;
+    sessionToken: string;
     role: Roles;
 }
