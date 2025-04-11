@@ -8,13 +8,13 @@ import { IFindUserOptions } from "../interfaces/find-user-options.interface";
 export class UserRepository {
     constructor(
         @InjectRepository(UserEntity)
-        private readonly userRepository: Repository<UserEntity>
+        private readonly repository: Repository<UserEntity>
     ) {}
 
     async findById(id: number, options?: IFindUserOptions): Promise<UserEntity | null> {
         const { includePassword = false, relations = [] } = options || {};
 
-        const query = this.userRepository.createQueryBuilder('user')
+        const query = this.repository.createQueryBuilder('user')
             .where('user.id = :id', { id });
 
         if (includePassword) {
@@ -31,7 +31,7 @@ export class UserRepository {
     async findByEmail(email: string, options?: IFindUserOptions): Promise<UserEntity | null> {
         const { includePassword = false, relations = [] } = options || {};
 
-        const query = this.userRepository.createQueryBuilder('user')
+        const query = this.repository.createQueryBuilder('user')
             .where('user.email = :email', { email });
 
         if (includePassword) {
@@ -46,24 +46,24 @@ export class UserRepository {
     }
 
     async findAll(): Promise<UserEntity[]> {
-        return this.userRepository.find({
+        return this.repository.find({
             select: ['id', 'email', 'name', 'createdAt', 'role', 'provider'],
         });
     }    
 
     create(user: Partial<UserEntity>): UserEntity {
-        return this.userRepository.create(user);
+        return this.repository.create(user);
     }
 
     save(user: UserEntity): Promise<UserEntity> {
-        return this.userRepository.save(user);
+        return this.repository.save(user);
     }
 
     merge(target: UserEntity, source: Partial<UserEntity>): UserEntity {
-        return this.userRepository.merge(target, source);
+        return this.repository.merge(target, source);
     }
 
     async remove(user: UserEntity): Promise<void> {
-        await this.userRepository.remove(user);
+        await this.repository.remove(user);
     }
 }

@@ -1,8 +1,9 @@
+import { IUser } from "./user.interface";
+
 export interface IResetToken {
     id: number;
     token: string;
     exp: Date;
-    userId: number;
-    userAgent: string;
+    user: IUser;
     createdAt: Date;
 }

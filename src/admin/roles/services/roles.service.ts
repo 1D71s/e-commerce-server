@@ -2,7 +2,7 @@ import { BadRequestException, ForbiddenException, Injectable, NotFoundException 
 import { Roles } from '../enums/roles.enum';
 import { ChangeRoleDto } from '../dtos/requests/change-role.dto';
 import { IJwtPayload } from 'src/auth/interfaces/jwt-payload-user.interface';
-import { MessageInterface } from 'src/common/dto/responses/message.response';
+import { IMessage } from 'src/common/dto/responses/message.response';
 import { UserRepository } from 'src/users/repositories/user.repository';
 
 @Injectable()
@@ -11,7 +11,7 @@ export class RolesService {
         private readonly userRepository: UserRepository,
     ) {}
 
-    async updateRole(query: ChangeRoleDto, user: IJwtPayload): Promise<MessageInterface> {
+    async updateRole(query: ChangeRoleDto, user: IJwtPayload): Promise<IMessage> {
         const { userId, newRole } = query;
         const checkAccess = this.checkRoleHierarchy(user.role ,newRole);
 

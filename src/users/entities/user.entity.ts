@@ -3,6 +3,7 @@ import { Entity, PrimaryGeneratedColumn, CreateDateColumn, Column, OneToMany } f
 import { Provider } from "../interfaces/enums/provider.enum";
 import { Roles } from "src/admin/roles/enums/roles.enum";
 import { IUser } from "../interfaces/user.interface";
+import { ResetToken } from "./reset-token.entity";
 
 @Entity('users')
 export class UserEntity implements IUser {
@@ -26,6 +27,9 @@ export class UserEntity implements IUser {
 
     @OneToMany(() => SessionEntity, (session) => session.user)
     sessions: SessionEntity[];
+
+    @OneToMany(() => SessionEntity, (reset_token) => reset_token.user)
+    resetTokens: ResetToken[];
     
     @CreateDateColumn()
     createdAt: Date;

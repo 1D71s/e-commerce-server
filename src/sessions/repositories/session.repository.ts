@@ -7,22 +7,22 @@ import { SessionEntity } from "../entities/session.entity";
 export class SessionRepository {
     constructor(
         @InjectRepository(SessionEntity)
-        private readonly tokenRepository: Repository<SessionEntity>,
+        private readonly repository: Repository<SessionEntity>,
     ) {}
 
     async getOne(options: FindOneOptions<SessionEntity>): Promise<SessionEntity | null> {
-        return this.tokenRepository.findOne(options);
+        return this.repository.findOne(options);
     }
 
     create(data: Partial<SessionEntity>): SessionEntity {
-        return this.tokenRepository.create(data);
+        return this.repository.create(data);
     }
 
     save(token: SessionEntity): Promise<SessionEntity> {
-        return this.tokenRepository.save(token);
+        return this.repository.save(token);
     }
 
     async deleteToken(token: string): Promise<void> {
-        await this.tokenRepository.delete({ token });
+        await this.repository.delete({ token });
     }
 }

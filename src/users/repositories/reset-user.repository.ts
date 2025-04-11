@@ -1,36 +1,32 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { DeleteResult, Repository } from "typeorm";
+import { DeleteResult, FindOneOptions, Repository } from "typeorm";
 import { ResetToken } from "../entities/reset-token.entity";
 
 @Injectable()
 export class ResetTokenRepository {
     constructor(
         @InjectRepository(ResetToken)
-        private readonly resetTokenRepository: Repository<ResetToken>
+        private readonly repository: Repository<ResetToken>
     ) {}
 
-    async findOneByToken(token: string): Promise<ResetToken | null> {
-        return this.resetTokenRepository.findOne({
-            where: { token },
-        });
+    async getOne(options: FindOneOptions<ResetToken>): Promise<ResetToken | null> {
+        return this.repository.findOne(options);
     }
 
-    async findByUserIdAndAgent(userId: number, userAgent: string): Promise<ResetToken[]> {
-        return this.resetTokenRepository.find({
-            where: { userId, userAgent },
-        });
+    async getUsersAll(options: FindOneOptions<ResetToken>): Promise<ResetToken[] | []> {
+        return this.repository.find(options);
     }
 
     async deleteByConditions(conditions: Partial<ResetToken>): Promise<DeleteResult> {
-        return this.resetTokenRepository.delete(conditions);
+        return this.repository.delete(conditions);
+    }
+
+    async create(resetTokenData: Partial<ResetToken>): Promise<ResetToken> {
+        return this.repository.create(resetTokenData);
     }
 
     async save(resetToken: ResetToken): Promise<ResetToken> {
-        return this.resetTokenRepository.save(resetToken);
-    }
-
-    async deleteByUserIdAndAgent(userId: number, userAgent: string): Promise<void> {
-        await this.resetTokenRepository.delete({ userId, userAgent });
+        return this.repository.save(resetToken);
     }
 }

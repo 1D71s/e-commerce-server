@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, JoinColumn, ManyToOne } from 'typeorm';
 import { IResetToken } from '../interfaces/reset-token.interface';
+import { UserEntity } from './user.entity';
 
 @Entity('reset_token')  
 export class ResetToken implements IResetToken {
@@ -13,11 +14,9 @@ export class ResetToken implements IResetToken {
     @Column({ type: 'timestamptz' })
     exp: Date;
 
-    @Column()
-    userId: number;
-
-    @Column({ name: 'user_agent' })
-    userAgent: string;
+    @ManyToOne(() => UserEntity, (user) => user.resetTokens, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'user' })
+    user: UserEntity;
 
     @CreateDateColumn()
     createdAt: Date;

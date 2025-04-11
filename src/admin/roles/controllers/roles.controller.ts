@@ -8,7 +8,7 @@ import { JwtAuthGuard } from 'src/auth/guards/auth.guard';
 import { RolesGuard } from '../guards/roles.guard';
 import { User } from 'src/common/decorators/user.decorator';
 import { IJwtPayload } from 'src/auth/interfaces/jwt-payload-user.interface';
-import { MessageInterface } from 'src/common/dto/responses/message.response';
+import { IMessage } from 'src/common/dto/responses/message.response';
 
 @Controller('roles')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -17,7 +17,7 @@ export class RolesController {
     constructor(private readonly rolesService: RolesService) { }
     
     @Patch('change-role')
-    async updateRole(@Query() query: ChangeRoleDto, @User() user: IJwtPayload): Promise<MessageInterface> {
+    async updateRole(@Query() query: ChangeRoleDto, @User() user: IJwtPayload): Promise<IMessage> {
         return await this.rolesService.updateRole(query, user);
     }
 }
