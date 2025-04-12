@@ -8,7 +8,8 @@ import { UserEntity } from 'src/users/entities/user.entity';
 import { Cookie } from 'src/common/decorators/cookie.decorator';
 import { JwtAuthGuard } from '../guards/auth.guard';
 import { Throttle } from '@nestjs/throttler';
-import { REFRESH_TOKEN } from '../variables';
+import { IMessage } from 'src/common/dto/responses/message.response';
+import { REFRESH_TOKEN } from 'src/common/variables';
 
 @Controller('auth')
 export class AuthController {
@@ -18,7 +19,7 @@ export class AuthController {
 
     @Post('register')
     @Throttle({ default: { limit: 1, ttl: 3600000 } })
-    async register(@Body() dto: RegisterDto): Promise<UserEntity> {
+    async register(@Body() dto: RegisterDto): Promise<IMessage> {
         return this.authService.register(dto);
     }
 

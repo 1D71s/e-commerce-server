@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { DatabaseModule } from './database/database.module';
@@ -12,33 +12,38 @@ import { AdminCategoriesModule } from './admin/admin-categories/admin-categories
 import { RolesModule } from './admin/roles/roles.module';
 import { BansModule } from './admin/bans/bans.module';
 import { AdminProductsModule } from './admin/admin-products/admin-products.module';
-import { TelegramModule } from './telegram/telegram.module';
+import { LoggerMiddleware } from './common/middlewares/logger.middleware';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
-  imports: [
-    ThrottlerModule.forRoot([{
-      ttl: 6000,
-      limit: 3,
-    }]),
-    // TelegramModule,
-    UsersModule,
-    AuthModule,
-    DatabaseModule,
-    SessionsModule,
-    CategoriesModule,
-    ProductsModule,
-    MailerModule,
-    AdminCategoriesModule,
-    RolesModule,
-    BansModule,
-    AdminProductsModule
-  ],
-  controllers: [],
-  providers: [
-    {
-      provide: APP_GUARD,
-      useClass: ThrottlerGuard,
-    },
-  ],
+    imports: [
+        ThrottlerModule.forRoot([{
+            ttl: 6000,
+            limit: 3,
+        }]),
+        UsersModule,
+        AuthModule,
+        DatabaseModule,
+        SessionsModule,
+        CategoriesModule,
+        ProductsModule,
+        MailerModule,
+        AdminCategoriesModule,
+        RolesModule,
+        BansModule,
+        AdminProductsModule,
+        RedisModule
+    ],
+    controllers: [],
+    providers: [
+        {
+            provide: APP_GUARD,
+            useClass: ThrottlerGuard,
+        },
+    ],
 })
-export class AppModule {}
+export class AppModule {
+    configure(consumer: MiddlewareConsumer) {
+        consumer.apply(LoggerMiddleware).forRoutes('*');
+    }
+}

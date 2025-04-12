@@ -1,7 +1,6 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { UsersService } from '../services/users.service';
 import { Throttle } from '@nestjs/throttler';
-import { UserAgent } from 'src/common/decorators/user-agent.decorator';
 import { IMessage } from 'src/common/dto/responses/message.response';
 import { ResetPasswordDto } from '../dtos/requests/reset-password.dto';
 
@@ -18,7 +17,7 @@ export class UsersController {
     }
 
     @Post('reset/password/:token')
-    @Throttle({ default: { limit: 1, ttl: 3600000 } })
+    @Throttle({ default: { limit: 1, ttl: 600000 } })
     async changePassword(@Param('token') token: string, @Body() dto: ResetPasswordDto): Promise<IMessage> {
         return this.usersService.changePassword(token, dto.password);
     }

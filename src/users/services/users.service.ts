@@ -6,8 +6,8 @@ import { MailerService } from 'src/mailer/services/mailer.service';
 import { ResetTokenRepository } from '../repositories/reset-user.repository';
 import { ResetToken } from '../entities/reset-token.entity';
 import { v4 as uuidv4 } from 'uuid';
-import { IUser } from '../interfaces/user.interface';
 import { UserEntity } from '../entities/user.entity';
+import { askResetPassword } from 'src/mailer/templates/reset-passwoed-ask';
 
 @Injectable()
 export class UsersService {
@@ -34,20 +34,11 @@ export class UsersService {
 
         await this.resetTokenRepository.deleteByConditions({ user: user });
 
-        const token = this.createResetToken(user);
+        const token = await this.createResetToken(user);
         
-        const title = "Оновлення пароля на вашому обліковому записі";
-        const html = `
-            <p>Привіт!</p>
-            <p>Ви отримали цей лист, оскільки ініціювали оновлення пароля для вашого облікового запису.</p>
-            <p>Щоб завершити процес, будь ласка, перейдіть за наступним посиланням:</p>
-            <p><a href="${process.env.CLIENT_LINK}/password/update/${token}" style="color: #007bff; text-decoration: none;">
-                Оновити пароль
-            </a></p>
-            <p>Якщо ви не робили цей запит, просто ігноруйте цей лист. Ваш пароль не буде змінено.</p>
-            <p>З найкращими побажаннями,</p>
-            <p>Ваша команда підтримки</p>
-        `
+        const template = askResetPassword(token.token);
+
+        const { title, html } = template;
 
         await this.mailerService.sendEmail(email, title, html)
         return { message: "The code has been send to your email" }
@@ -91,7 +82,10 @@ export class UsersService {
     }
     
     private async validateToken(token: string): Promise<ResetToken> {
-        const resetToken = await this.resetTokenRepository.getOne({ where: { token } });
+        const resetToken = await this.resetTokenRepository.getOne({ 
+            where: { token }, 
+            relations: ['user'] 
+        });
     
         if (!resetToken) throw new NotFoundException("Token was not found!");
     

@@ -2,7 +2,7 @@ import { BadRequestException, ConflictException, Injectable, InternalServerError
 import { RegisterDto } from '../dto/requests/register.dto';
 import { UserEntity } from 'src/users/entities/user.entity';
 import { JwtService } from "@nestjs/jwt";
-import { IAccessToken, ISessionAndAccessToken, ITokens } from '../dto/responses/tokens.response';
+import { IAccessToken, ISessionAndAccessToken } from '../dto/responses/tokens.response';
 import { GoogleUser } from '../interfaces/google-user.interface';
 import { Provider } from 'src/users/interfaces/enums/provider.enum';
 import { Response } from "express";
@@ -12,7 +12,10 @@ import { SessionsService } from 'src/sessions/services/sessions.service';
 import { SessionRepository } from 'src/sessions/repositories/session.repository';
 import { UserRepository } from 'src/users/repositories/user.repository';
 import { genSaltSync, hashSync } from 'bcrypt';
-import { REFRESH_TOKEN } from '../variables';
+import { IMessage } from 'src/common/dto/responses/message.response';
+import { RedisService } from 'src/redis/service/redis.service';
+import { ISession } from 'src/sessions/interfaces/session.interface';
+import { REFRESH_TOKEN, USER_SESSIONS } from 'src/common/variables';
 
 @Injectable()
 export class AuthService {
@@ -21,9 +24,10 @@ export class AuthService {
         private readonly jwtService: JwtService,
         private readonly userRepository: UserRepository,
         private readonly sessionRepository: SessionRepository,
+        private readonly redisService: RedisService,
     ) { }
 
-    async register(dto: RegisterDto) {
+    async register(dto: RegisterDto): Promise<IMessage> {
         const user = await this.userRepository.findByEmail(dto.email);
 
         if (user) {
@@ -36,7 +40,9 @@ export class AuthService {
             ...dto, password: hashPassword
         });
 
-        return this.userRepository.save(newUser);
+        await this.userRepository.save(newUser);
+        
+        return { message: 'User was created' };
     }
 
     async login(dto: LoginDto, agent: string): Promise<ISessionAndAccessToken> {
@@ -55,22 +61,31 @@ export class AuthService {
     }
 
     async deleteRefreshToken(token: string): Promise<void> {
-        return this.sessionRepository.deleteToken(token);
+        const session = await this.sessionRepository.getOne({
+            where: { token },
+            relations: [ 'user' ],
+        })
+
+        if (!session) {
+            throw new NotFoundException('Session was not found');
+        }
+
+        return this.removeSessionRedisAlso(session);
     }
 
     async updateRefreshTokens(refreshToken: string, agent: string): Promise<ISessionAndAccessToken> {
-        const token = await this.sessionRepository.getOne({
+        const session = await this.sessionRepository.getOne({
             where: { token: refreshToken },
             relations: [ 'user' ],
         })
 
-        if (!token || new Date(token.exp) < new Date()) {
+        if (!session || new Date(session.exp) < new Date()) {
             throw new UnauthorizedException('Token is not valide or did not found');
         }
         
-        await this.sessionRepository.deleteToken(refreshToken);
+        await this.removeSessionRedisAlso(session);
 
-        const user = await this.userRepository.findById(token.user.id);
+        const user = await this.userRepository.findById(session.user.id);
 
         return this.generateTokens(user, agent);
     }
@@ -129,7 +144,9 @@ export class AuthService {
 
     private async generateTokens(user: UserEntity, agent: string): Promise<ISessionAndAccessToken> {
         const session = await this.sessionsService.getOrUpdateRefreshToken(user, agent);
-        
+
+        await this.addSessionToCache(session);
+
         const accessToken = this.jwtService.sign({
             id: user.id,
             email: user.email,
@@ -143,4 +160,24 @@ export class AuthService {
     private hashPassword(password: string): string {
         return hashSync(password, genSaltSync(10))
     }
+
+    private async removeSessionRedisAlso(session: ISession): Promise<void> {
+        const { token } = session;
+        await this.sessionRepository.delete(token);
+        await this.removeSessionFromCache(session);
+    }
+
+    private async addSessionToCache(session: ISession): Promise<void> {
+        const { user, userAgent } = session;
+        const cacheKey = `${USER_SESSIONS}_${userAgent}:${user.id}`;
+        
+        await this.redisService.set(cacheKey, JSON.stringify(session), { EX: 604800 });
+    }
+
+    private async removeSessionFromCache(session: ISession): Promise<void> {
+        const { user, userAgent } = session;
+
+        const cacheKey = `${USER_SESSIONS}_${userAgent}:${user.id}`;
+        await this.redisService.delete(cacheKey);
+    } 
 }

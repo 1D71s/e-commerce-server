@@ -15,27 +15,32 @@ import { PassportModule } from '@nestjs/passport';
 import { SessionsModule } from 'src/sessions/sessions.module';
 import { UsersModule } from 'src/users/users.module';
 import { GoogleAuthController } from './controllers/google-auth.controller';
+import { RedisModule } from 'src/redis/redis.module';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot(),
-    TypeOrmModule.forFeature([UserEntity, SessionEntity]),
-    JwtModule.register({
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '5m' },
-    }),
-    HttpModule,
-    PassportModule,
-    SessionsModule,
-    UsersModule
-  ],
-  controllers: [AuthController, GoogleAuthController],
-  providers: [
-    MailerService,
-    AuthService,
-    GoogleStrategy,
-    JwtStrategy,
-    JwtAuthGuard
-  ],
+    imports: [
+        ConfigModule.forRoot(),
+        TypeOrmModule.forFeature([UserEntity, SessionEntity]),
+        JwtModule.register({
+            secret: process.env.JWT_SECRET,
+            signOptions: { expiresIn: '5m' },
+        }),
+        HttpModule,
+        PassportModule,
+        SessionsModule,
+        UsersModule,
+        RedisModule
+    ],
+    controllers: [
+        AuthController, 
+        GoogleAuthController
+    ],
+    providers: [
+        MailerService,
+        AuthService,
+        GoogleStrategy,
+        JwtStrategy,
+        JwtAuthGuard
+    ],
 })
 export class AuthModule {}

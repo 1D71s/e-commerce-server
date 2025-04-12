@@ -14,7 +14,7 @@ export class ResetTokenRepository {
         return this.repository.findOne(options);
     }
 
-    async getUsersAll(options: FindOneOptions<ResetToken>): Promise<ResetToken[] | []> {
+    async getUsersAll(options: FindOneOptions<ResetToken>): Promise<ResetToken[]> {
         return this.repository.find(options);
     }
 

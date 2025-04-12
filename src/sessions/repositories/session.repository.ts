@@ -22,7 +22,7 @@ export class SessionRepository {
         return this.repository.save(token);
     }
 
-    async deleteToken(token: string): Promise<void> {
+    async delete(token: string): Promise<void> {
         await this.repository.delete({ token });
     }
 }
