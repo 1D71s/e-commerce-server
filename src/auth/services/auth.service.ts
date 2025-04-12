@@ -70,7 +70,7 @@ export class AuthService {
             throw new NotFoundException('Session was not found');
         }
 
-        return this.removeSessionRedisAlso(session);
+        return this.removeSession(session);
     }
 
     async updateRefreshTokens(refreshToken: string, agent: string): Promise<ISessionAndAccessToken> {
@@ -83,7 +83,7 @@ export class AuthService {
             throw new UnauthorizedException('Token is not valide or did not found');
         }
         
-        await this.removeSessionRedisAlso(session);
+        await this.removeSession(session);
 
         const user = await this.userRepository.findById(session.user.id);
 
@@ -161,7 +161,7 @@ export class AuthService {
         return hashSync(password, genSaltSync(10))
     }
 
-    private async removeSessionRedisAlso(session: ISession): Promise<void> {
+    private async removeSession(session: ISession): Promise<void> {
         const { token } = session;
         await this.sessionRepository.delete(token);
         await this.removeSessionFromCache(session);

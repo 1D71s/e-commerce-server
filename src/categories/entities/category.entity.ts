@@ -1,35 +1,17 @@
-import { ProductEntity } from 'src/products/entities/product.entity';
-import {
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
-    CreateDateColumn,
-    UpdateDateColumn,
-    ManyToOne,
-    OneToMany,
-    JoinColumn
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { SubcategoryEntity } from './sub-category.entity';
+import { ICategory } from '../interfaces/category.interface';
 
 @Entity('categories')
-export class CategoryEntity {
+export class CategoryEntity implements ICategory {
     @PrimaryGeneratedColumn('increment')
     id: number;
 
     @Column({ type: 'varchar', length: 255, unique: true })
     name: string;
 
-    @Column({ type: 'text', nullable: true })
-    description: string;
-
-    @OneToMany(() => CategoryEntity, (category) => category.parentCategory)
-    children: CategoryEntity[];
-
-    @ManyToOne(() => CategoryEntity, (category) => category.children, { nullable: true })
-    @JoinColumn({ name: 'parentId' })
-    parentCategory: CategoryEntity;
-
-    @OneToMany(() => ProductEntity, (product) => product.category)
-    products: ProductEntity[];
+    @OneToMany(() => SubcategoryEntity, (subcategory) => subcategory.category)
+    subcategories: SubcategoryEntity[];
 
     @CreateDateColumn()
     createdAt: Date;

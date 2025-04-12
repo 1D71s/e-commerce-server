@@ -1,8 +1,9 @@
-import { CategoryEntity } from "src/categories/entities/category.entity";
+import { SubcategoryEntity } from "src/categories/entities/sub-category.entity";
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import { IProduct } from "../imterfaces/product.interface";
 
 @Entity('products')
-export class ProductEntity {
+export class ProductEntity implements IProduct {
     @PrimaryGeneratedColumn('increment')
     id: number;
 
@@ -15,9 +16,9 @@ export class ProductEntity {
     @Column({ nullable: true })
     description: string;
 
-    @ManyToOne(() => CategoryEntity, (category) => category.products)
-    @JoinColumn({ name: 'categoryId' })
-    category: CategoryEntity;
+    @ManyToOne(() => SubcategoryEntity, (subcategory) => subcategory.products)
+    @JoinColumn({ name: 'subcategoryId' })
+    subcategory: SubcategoryEntity;
 
     @CreateDateColumn()
     createdAt: Date;
