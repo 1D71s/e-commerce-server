@@ -13,4 +13,8 @@ export class SubCategoriesService {
             where: { category: { id: parentId } },
         });
     }
+
+    async getAllSubCategories(): Promise<ISubCategory[]> {
+        return await this.subCategoryRepository.getAll();
+    }
 }
