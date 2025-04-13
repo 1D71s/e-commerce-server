@@ -2,8 +2,9 @@ import { ISubCategory } from "src/categories/interfaces/sub-category.interface";
 
 export class IProduct {
     id: number;
-    name: string;
-    primaryPhoto: string;
+    title: string;
+    mainPhoto: string;
+    price: number;
     description: string;
     subcategory: ISubCategory;
 }

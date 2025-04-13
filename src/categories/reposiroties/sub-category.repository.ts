@@ -3,7 +3,6 @@ import { SubcategoryEntity } from '../entities/sub-category.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, FindOneOptions, Repository } from 'typeorm';
 import { ISubCategory } from '../interfaces/sub-category.interface';
-import { CreateSubCategoryDto } from 'src/admin/admin-categories/dtos/create-sub-category.dto';
 
 @Injectable()
 export class SubCategoryRepository  {
