@@ -7,7 +7,6 @@ import { UserEntity } from 'src/users/entities/user.entity';
 import { RedisService } from 'src/redis/service/redis.service';
 import { buildRedisKey } from 'src/common/utils/build-redis-key';
 import { ISession } from '../interfaces/session.interface';
-import { agent } from 'supertest';
 
 @Injectable()
 export class SessionsService {
@@ -48,7 +47,7 @@ export class SessionsService {
         await this.redisService.set(cacheKey, JSON.stringify(session), { EX: 604800 });
     }
 
-    public async getOrUpdateRefreshToken(user: UserEntity, agent: string): Promise<SessionEntity> {
+    async getOrUpdateRefreshToken(user: UserEntity, agent: string): Promise<SessionEntity> {
         const existingToken = await this.sessionRepository.getOne({
             where: { user: { id: user.id }, userAgent: agent },
             relations: ['user'],

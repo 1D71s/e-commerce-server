@@ -3,6 +3,7 @@ import { CategoryRepository } from 'src/categories/reposiroties/category.reposit
 import { CreateCategoryDto } from '../dtos/create-category.dto';
 import { ICategory } from 'src/categories/interfaces/category.interface';
 import { IMessage } from 'src/common/dto/responses/message.response';
+import { UpdateCategoryDto } from '../dtos/update-category.dto';
 
 @Injectable()
 export class AdminCategoriesService {
@@ -23,15 +24,17 @@ export class AdminCategoriesService {
         return this.categoryRepository.save(newCategory);
     }
 
-    async updateCategory(categoryId: number, dto: CreateCategoryDto): Promise<ICategory> {
-        const category = await this.categoryRepository.getOne({
-            where: { id: categoryId },
-        });
+    async updateCategory(dto: UpdateCategoryDto): Promise<ICategory> {
+        const { id, name } = dto;
+
+        const category = await this.categoryRepository.getOne({ where: { id } });
         if (!category) {
-            throw new NotFoundException(`Category with ID ${categoryId} not found.`);
+            throw new NotFoundException(`Category with ID ${id} not found.`);
         }
-        const updatedCategory = Object.assign(category, dto);
-        return this.categoryRepository.save(updatedCategory);
+
+        category.name = name;
+
+        return this.categoryRepository.save(category);
     }
 
     async removeCategory(categoryId: number): Promise<IMessage> {

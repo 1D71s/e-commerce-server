@@ -9,7 +9,7 @@ import { IMessage } from 'src/common/dto/responses/message.response';
 import { ICategory } from 'src/categories/interfaces/category.interface';
 import { UpdateCategoryDto } from '../dtos/update-category.dto';
 
-@Controller('admin-categories')
+@Controller('admin/categories')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Role(Roles.ADMIN, Roles.OWNER)
 export class AdminCategoriesController {
@@ -24,7 +24,7 @@ export class AdminCategoriesController {
 
     @Post('update')
     async updateCategory(@Body() dto: UpdateCategoryDto): Promise<ICategory> {
-        return this.adminCategoriesService.createCategory(dto);
+        return this.adminCategoriesService.updateCategory(dto);
     }
 
     @Delete('delete/:id')

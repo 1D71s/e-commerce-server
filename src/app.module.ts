@@ -10,7 +10,6 @@ import { ProductsModule } from './products/product.module';
 import { MailerModule } from './mailer/mailer.module';
 import { AdminCategoriesModule } from './admin/admin-categories/admin-categories.module';
 import { RolesModule } from './admin/roles/roles.module';
-import { BansModule } from './admin/bans/bans.module';
 import { AdminProductsModule } from './admin/admin-products/admin-products.module';
 import { LoggerMiddleware } from './common/middlewares/logger.middleware';
 import { RedisModule } from './redis/redis.module';
@@ -30,7 +29,6 @@ import { RedisModule } from './redis/redis.module';
         MailerModule,
         AdminCategoriesModule,
         RolesModule,
-        BansModule,
         AdminProductsModule,
         RedisModule
     ],
