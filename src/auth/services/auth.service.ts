@@ -13,9 +13,8 @@ import { SessionRepository } from 'src/sessions/repositories/session.repository'
 import { UserRepository } from 'src/users/repositories/user.repository';
 import { genSaltSync, hashSync } from 'bcrypt';
 import { IMessage } from 'src/common/dto/responses/message.response';
-import { RedisService } from 'src/redis/service/redis.service';
-import { ISession } from 'src/sessions/interfaces/session.interface';
-import { REFRESH_TOKEN, USER_SESSIONS } from 'src/common/variables';
+import { REFRESH_TOKEN } from 'src/common/variables';
+import { IJwtPayload } from '../interfaces/jwt-payload-user.interface';
 
 @Injectable()
 export class AuthService {
@@ -24,7 +23,6 @@ export class AuthService {
         private readonly jwtService: JwtService,
         private readonly userRepository: UserRepository,
         private readonly sessionRepository: SessionRepository,
-        private readonly redisService: RedisService,
     ) { }
 
     async register(dto: RegisterDto): Promise<IMessage> {
@@ -60,7 +58,7 @@ export class AuthService {
         return this.generateTokens(user, agent);
     }
 
-    async deleteRefreshToken(token: string): Promise<void> {
+    async deleteRefreshToken(token: string, agent: string): Promise<void> {
         const session = await this.sessionRepository.getOne({
             where: { token },
             relations: [ 'user' ],
@@ -70,7 +68,7 @@ export class AuthService {
             throw new NotFoundException('Session was not found');
         }
 
-        return this.removeSession(session);
+        return this.sessionsService.removeSession(session, agent);
     }
 
     async updateRefreshTokens(refreshToken: string, agent: string): Promise<ISessionAndAccessToken> {
@@ -83,7 +81,7 @@ export class AuthService {
             throw new UnauthorizedException('Token is not valide or did not found');
         }
         
-        await this.removeSession(session);
+        await this.sessionsService.removeSession(session, agent);
 
         const user = await this.userRepository.findById(session.user.id);
 
@@ -145,14 +143,16 @@ export class AuthService {
     private async generateTokens(user: UserEntity, agent: string): Promise<ISessionAndAccessToken> {
         const session = await this.sessionsService.getOrUpdateRefreshToken(user, agent);
 
-        await this.addSessionToCache(session);
+        this.sessionsService.addSessionToCache(session, agent);
 
-        const accessToken = this.jwtService.sign({
+        const tokenPayload: IJwtPayload = {
             id: user.id,
             email: user.email,
-            session: session.token,
-            role: user.role
-        });
+            refreshToken: session.token,
+            role: user.role,
+        };
+        
+        const accessToken = this.jwtService.sign(tokenPayload);
 
         return { accessToken, session };
     }
@@ -160,24 +160,4 @@ export class AuthService {
     private hashPassword(password: string): string {
         return hashSync(password, genSaltSync(10))
     }
-
-    private async removeSession(session: ISession): Promise<void> {
-        const { token } = session;
-        await this.sessionRepository.delete(token);
-        await this.removeSessionFromCache(session);
-    }
-
-    private async addSessionToCache(session: ISession): Promise<void> {
-        const { user, userAgent } = session;
-        const cacheKey = `${USER_SESSIONS}_${userAgent}:${user.id}`;
-        
-        await this.redisService.set(cacheKey, JSON.stringify(session), { EX: 604800 });
-    }
-
-    private async removeSessionFromCache(session: ISession): Promise<void> {
-        const { user, userAgent } = session;
-
-        const cacheKey = `${USER_SESSIONS}_${userAgent}:${user.id}`;
-        await this.redisService.delete(cacheKey);
-    } 
 }

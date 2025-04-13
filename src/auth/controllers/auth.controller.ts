@@ -10,6 +10,7 @@ import { JwtAuthGuard } from '../guards/auth.guard';
 import { Throttle } from '@nestjs/throttler';
 import { IMessage } from 'src/common/dto/responses/message.response';
 import { REFRESH_TOKEN } from 'src/common/variables';
+import { agent } from 'supertest';
 
 @Controller('auth')
 export class AuthController {
@@ -38,12 +39,12 @@ export class AuthController {
 
     @Delete('logout')
     @UseGuards(JwtAuthGuard)
-    async logout(@Cookie(REFRESH_TOKEN) refreshToken: string, @Res() res: Response): Promise<void> {
+    async logout(@Cookie(REFRESH_TOKEN) refreshToken: string, @Res() res: Response, @UserAgent() agent: string): Promise<void> {
         if (!refreshToken) {
             res.sendStatus(HttpStatus.OK);
             return;
         }
-        await this.authService.deleteRefreshToken(refreshToken);
+        await this.authService.deleteRefreshToken(refreshToken, agent);
         res.cookie(REFRESH_TOKEN, '', { httpOnly: true, secure: true, expires: new Date() });
         res.sendStatus(HttpStatus.OK);
     }

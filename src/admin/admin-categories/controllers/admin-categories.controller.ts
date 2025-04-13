@@ -7,6 +7,7 @@ import { JwtAuthGuard } from 'src/auth/guards/auth.guard';
 import { Role } from 'src/common/decorators/roles.decorator';
 import { IMessage } from 'src/common/dto/responses/message.response';
 import { ICategory } from 'src/categories/interfaces/category.interface';
+import { UpdateCategoryDto } from '../dtos/update-category.dto';
 
 @Controller('admin-categories')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -18,6 +19,11 @@ export class AdminCategoriesController {
 
     @Post('create')
     async createCategory(@Body() dto: CreateCategoryDto): Promise<ICategory> {
+        return this.adminCategoriesService.createCategory(dto);
+    }
+
+    @Post('update')
+    async updateCategory(@Body() dto: UpdateCategoryDto): Promise<ICategory> {
         return this.adminCategoriesService.createCategory(dto);
     }
 

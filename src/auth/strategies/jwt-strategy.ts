@@ -3,7 +3,6 @@ import { PassportStrategy } from '@nestjs/passport';
 import * as process from "process";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { IJwtPayload } from '../interfaces/jwt-payload-user.interface';
-import { SessionRepository } from 'src/sessions/repositories/session.repository';
 import { SessionsService } from 'src/sessions/services/sessions.service';
 
 @Injectable()
@@ -21,14 +20,17 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
     async validate(req: Request, payload: IJwtPayload) {
         const userAgent = req.headers['user-agent'];
-        const { sessionToken, id } = payload;
-        
-        const session = await this.sessionService.validateSession(id, sessionToken, userAgent);
 
-        if (!session || session.exp < new Date()) {
+        const { id, role, refreshToken } = payload;
+        
+        const session = await this.sessionService.validateSession(id, refreshToken, userAgent);
+
+        if (!session || session.exp < new Date() || session.token !== refreshToken) {
             throw new UnauthorizedException("Token was not found or is not valid.");
         }
 
-        return session.user;
+        const user = { id, role };
+    
+        return user;
     }
 }
