@@ -4,13 +4,11 @@ import { Response } from "express";
 import { UserAgent } from 'src/common/decorators/user-agent.decorator';
 import { RegisterDto } from '../dto/requests/register.dto';
 import { LoginDto } from '../dto/requests/login.dto';
-import { UserEntity } from 'src/users/entities/user.entity';
 import { Cookie } from 'src/common/decorators/cookie.decorator';
 import { JwtAuthGuard } from '../guards/auth.guard';
 import { Throttle } from '@nestjs/throttler';
 import { IMessage } from 'src/common/dto/responses/message.response';
 import { REFRESH_TOKEN } from 'src/common/variables';
-import { agent } from 'supertest';
 
 @Controller('auth')
 export class AuthController {

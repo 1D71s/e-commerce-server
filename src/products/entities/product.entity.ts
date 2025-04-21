@@ -1,6 +1,7 @@
 import { SubcategoryEntity } from "src/categories/entities/sub-category.entity";
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm";
 import { IProduct } from "../interfaces/product.interface";
+import { ProductImagesEntity } from "./product-images.entity";
 
 @Entity('products')
 export class ProductEntity implements IProduct {
@@ -16,11 +17,8 @@ export class ProductEntity implements IProduct {
     @Column({ type: 'varchar', length: 255 })
     title: string;
 
-    @Column({ type: 'varchar' })
-    mainPhoto: string;
-
     @Column({ nullable: false, default: "default" })
-    primaryPhoto: string;
+    mainPhoto: string;
 
     @Column({ nullable: true })
     description: string;
@@ -28,6 +26,9 @@ export class ProductEntity implements IProduct {
     @ManyToOne(() => SubcategoryEntity, (subcategory) => subcategory.products)
     @JoinColumn({ name: 'subcategoryId' })
     subcategory: SubcategoryEntity;
+
+    @OneToMany(() => ProductImagesEntity, (image) => image.product)
+    images: ProductImagesEntity[];
 
     @CreateDateColumn()
     createdAt: Date;
