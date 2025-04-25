@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ProductEntity } from '../entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { IProduct } from '../interfaces/product.interface';
 import { IProductsRepository } from '../interfaces/product-repository.interface';
 
@@ -12,19 +12,21 @@ export class ProductsRepository implements IProductsRepository {
         private readonly repository: Repository<ProductEntity>
     ) {}
 
-    async getOne(id: number): Promise<IProduct> {
-        return await this.repository.findOne({
-            where: { id },
-        });
+    async getOne(options: FindOneOptions<ProductEntity>): Promise<ProductEntity> {
+        return await this.repository.findOne(options);
     }
 
     async getAll(): Promise<IProduct[]> {
         return this.repository.find();
     }
 
+    async getMany(options: FindManyOptions<ProductEntity>): Promise<IProduct[]> {
+        return await this.repository.find(options);
+    }
+
     async getManyBySubCategoryId(scId: number, limit: number, page: number): Promise<IProduct[]> {
         return this.repository.find({
-            where: { subcategory: { id: scId } },
+            where: { subCategory: { id: scId } },
             take: limit,
             skip: (page - 1) * limit,
         });

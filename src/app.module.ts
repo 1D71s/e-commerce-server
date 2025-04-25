@@ -13,6 +13,7 @@ import { RolesModule } from './admin/roles/roles.module';
 import { AdminProductsModule } from './admin/admin-products/admin-products.module';
 import { LoggerMiddleware } from './common/middlewares/logger.middleware';
 import { RedisModule } from './redis/redis.module';
+import { FilesModule } from './files/files.module';
 
 @Module({
     imports: [
@@ -30,7 +31,8 @@ import { RedisModule } from './redis/redis.module';
         AdminCategoriesModule,
         RolesModule,
         AdminProductsModule,
-        RedisModule
+        RedisModule,
+        FilesModule
     ],
     controllers: [],
     providers: [

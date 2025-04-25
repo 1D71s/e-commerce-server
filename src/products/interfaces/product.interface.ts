@@ -8,5 +8,5 @@ export class IProduct {
     price: number;
     images: IProductImages[]
     description: string;
-    subcategory: ISubCategory;
+    subCategory: ISubCategory;
 }

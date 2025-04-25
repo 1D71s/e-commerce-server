@@ -8,9 +8,6 @@ export class ProductEntity implements IProduct {
     @PrimaryGeneratedColumn('increment')
     id: number;
 
-    @Column({ type: 'varchar', length: 255 })
-    name: string;
-
     @Column({ type: 'int', nullable: false })
     price: number;
 
@@ -25,7 +22,7 @@ export class ProductEntity implements IProduct {
 
     @ManyToOne(() => SubcategoryEntity, (subcategory) => subcategory.products)
     @JoinColumn({ name: 'subcategoryId' })
-    subcategory: SubcategoryEntity;
+    subCategory: SubcategoryEntity;
 
     @OneToMany(() => ProductImagesEntity, (image) => image.product)
     images: ProductImagesEntity[];

@@ -1,8 +1,9 @@
 import { IProduct } from "./product.interface";
 import { ProductEntity } from "../entities/product.entity";
+import { FindOneOptions } from "typeorm";
 
 export interface IProductsRepository {
-    getOne(id: number): Promise<IProduct>;
+    getOne(options: FindOneOptions<ProductEntity>): Promise<ProductEntity>;
     getAll(): Promise<IProduct[]>;
     getManyBySubCategoryId(scId: number, limit: number, page: number): Promise<IProduct[]>;
     create(product: IProduct): Promise<IProduct>;

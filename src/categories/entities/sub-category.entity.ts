@@ -15,7 +15,7 @@ export class SubcategoryEntity implements ISubCategory {
     @JoinColumn({ name: 'categoryId' })
     category: CategoryEntity;
 
-    @OneToMany(() => ProductEntity, (product) => product.subcategory)
+    @OneToMany(() => ProductEntity, (product) => product.subCategory)
     products: ProductEntity[];
 
     @CreateDateColumn()

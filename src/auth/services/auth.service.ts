@@ -45,14 +45,15 @@ export class AuthService {
 
     async login(dto: LoginDto, agent: string): Promise<ISessionAndAccessToken> {
         const { email, password } = dto;
+        const ERROR_MESSAGE = 'Incorrect email or password.';
         const user = await this.userRepository.findByEmail(email, { includePassword: true });
 
         if (!user) {
-            throw new NotFoundException("User was not found")
+            throw new NotFoundException(ERROR_MESSAGE)
         }
 
         if (user.provider || !compareSync(password, user.password)) {
-            throw new UnauthorizedException('Incorrect email or password.');
+            throw new UnauthorizedException(ERROR_MESSAGE);
         }
 
         return this.generateTokens(user, agent);
