@@ -8,7 +8,7 @@ import { Role } from 'src/common/decorators/roles.decorator';
 import { IMessage } from 'src/common/dto/responses/message.response';
 import { UpdateProductDto } from '../dtos/update-product.dto';
 
-@Controller('admin-products')
+@Controller('admin/products')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Role(Roles.ADMIN, Roles.OWNER)
 export class AdminProductsController {
