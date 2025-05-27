@@ -1,7 +1,6 @@
-import { Endpoints } from '../enums/endpoints.enum';
+import { Endpoint } from '../enums/endpoint.enum';
 
 export interface AccessInterface {
-    id: number;
     title: string;
-    endpoint: Endpoints;
+    endpoint: Endpoint;
 }

@@ -1,33 +1,37 @@
 import { Body, Controller, Delete, Param, Post, UseGuards } from '@nestjs/common';
 import { AdminCategoriesService } from '../services/admin-categories.service';
 import { CreateCategoryDto } from '../dtos/create-category.dto';
-import { Roles } from 'src/admin/roles/enums/roles.enum';
-import { RolesGuard } from 'src/admin/roles/guards/roles.guard';
-import { JwtAuthGuard } from 'src/auth/guards/auth.guard';
-import { Role } from 'src/common/decorators/roles.decorator';
 import { IMessage } from 'src/common/dto/responses/message.response';
 import { ICategory } from 'src/categories/interfaces/category.interface';
 import { UpdateCategoryDto } from '../dtos/update-category.dto';
+import { JwtAuthGuard } from '../../../auth/guards/auth.guard';
+import { AccessGuard } from '../../accesses/guards/access.guard';
+import { EndpointAccess } from '../../accesses/guards/endpoint-access.guard';
+import { Endpoint } from '../../accesses/enums/endpoint.enum';
 
 @Controller('admin/categories')
-@UseGuards(JwtAuthGuard, RolesGuard)
-@Role(Roles.ADMIN, Roles.OWNER)
 export class AdminCategoriesController {
     constructor(
         private readonly adminCategoriesService: AdminCategoriesService,
     ) {}
 
     @Post('create')
+    @UseGuards(JwtAuthGuard, AccessGuard)
+    @EndpointAccess(Endpoint.CREATE_CATEGORY)
     async createCategory(@Body() dto: CreateCategoryDto): Promise<ICategory> {
         return this.adminCategoriesService.createCategory(dto);
     }
 
     @Post('update')
+    @UseGuards(JwtAuthGuard, AccessGuard)
+    @EndpointAccess(Endpoint.UPDATE_CATEGORY)
     async updateCategory(@Body() dto: UpdateCategoryDto): Promise<ICategory> {
         return this.adminCategoriesService.updateCategory(dto);
     }
 
     @Delete('delete/:id')
+    @UseGuards(JwtAuthGuard, AccessGuard)
+    @EndpointAccess(Endpoint.DELETE_CATEGORY)
     async removeCategory(@Param('id') id: number): Promise<IMessage> {
         return this.adminCategoriesService.removeCategory(id);
     }
