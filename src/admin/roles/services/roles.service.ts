@@ -12,42 +12,42 @@ export class RolesService {
     ) {}
 
     async updateRole(query: ChangeRoleDto, user: IJwtPayload): Promise<IMessage> {
-        const { userId, newRole } = query;
-        const checkAccess = this.checkRoleHierarchy(user.role ,newRole);
-
-        if (!checkAccess) {
-            throw new ForbiddenException('Access denied');
-        }
-
-        const userForNewRole = await this.userRepository.findById(userId)
-
-        if (!userForNewRole) {
-            throw new NotFoundException('Access denied');
-        }
-
-        const updateUser = this.userRepository.merge(userForNewRole, {
-            role: newRole,
-        });
-
-        const savedUser = await this.userRepository.save(updateUser);
-
-        if (!savedUser) {
-            throw new BadRequestException('Role not updated');
-        }
+        // const { userId, newRole } = query;
+        // const checkAccess = this.checkRoleHierarchy(user.role ,newRole);
+        //
+        // if (!checkAccess) {
+        //     throw new ForbiddenException('Access denied');
+        // }
+        //
+        // const userForNewRole = await this.userRepository.findById(userId)
+        //
+        // if (!userForNewRole) {
+        //     throw new NotFoundException('Access denied');
+        // }
+        //
+        // const updateUser = this.userRepository.merge(userForNewRole, {
+        //     role: newRole,
+        // });
+        //
+        // const savedUser = await this.userRepository.save(updateUser);
+        //
+        // if (!savedUser) {
+        //     throw new BadRequestException('Role not updated');
+        // }
 
         return { message: 'Role updated' };
     }
 
-    public checkRoleHierarchy(userRole: string, requiredRole: string): boolean {
-        const { OWNER, ADMIN, MANAGER, CUSTOMER } = Roles;
-        const hierarchy: Record<string, string[]> = {
-            [OWNER]: [ADMIN, MANAGER, CUSTOMER],
-            [ADMIN]: [MANAGER, CUSTOMER],
-            [MANAGER]: [CUSTOMER],
-            [CUSTOMER]: [],
-        };
-
-        const allowedRoles = hierarchy[userRole];
-        return allowedRoles ? allowedRoles.includes(requiredRole) : false;
+    public checkRoleHierarchy(userRole: string, requiredRole: string): void {
+        // const { OWNER, ADMIN, MANAGER, CUSTOMER } = Roles;
+        // const hierarchy: Record<string, string[]> = {
+        //     [OWNER]: [ADMIN, MANAGER, CUSTOMER],
+        //     [ADMIN]: [MANAGER, CUSTOMER],
+        //     [MANAGER]: [CUSTOMER],
+        //     [CUSTOMER]: [],
+        // };
+        //
+        // const allowedRoles = hierarchy[userRole];
+        // return allowedRoles ? allowedRoles.includes(requiredRole) : false;
     }
 }

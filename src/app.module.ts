@@ -14,6 +14,9 @@ import { AdminProductsModule } from './admin/admin-products/admin-products.modul
 import { LoggerMiddleware } from './common/middlewares/logger.middleware';
 import { RedisModule } from './redis/redis.module';
 import { FilesModule } from './files/files.module';
+import { BasketsModule } from './baskets/baskets.module';
+import { OrdersModule } from './orders/orders.module';
+import { AccessesModule } from './admin/accesses/accesses.module';
 
 @Module({
     imports: [
@@ -32,7 +35,10 @@ import { FilesModule } from './files/files.module';
         RolesModule,
         AdminProductsModule,
         RedisModule,
-        FilesModule
+        FilesModule,
+        BasketsModule,
+        OrdersModule,
+        AccessesModule
     ],
     controllers: [],
     providers: [

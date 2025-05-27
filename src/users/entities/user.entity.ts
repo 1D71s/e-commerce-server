@@ -1,9 +1,10 @@
 import { SessionEntity } from "src/sessions/entities/session.entity";
-import { Entity, PrimaryGeneratedColumn, CreateDateColumn, Column, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, CreateDateColumn, Column, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
 import { Provider } from "../interfaces/enums/provider.enum";
-import { Roles } from "src/admin/roles/enums/roles.enum";
 import { IUser } from "../interfaces/user.interface";
 import { ResetToken } from "./reset-token.entity";
+import { CartItemEntity } from "src/baskets/entities/cart-item.entity";
+import { RoleEntity } from '../../admin/roles/entities/role.entity';
 
 @Entity('users')
 export class UserEntity implements IUser {
@@ -13,8 +14,9 @@ export class UserEntity implements IUser {
     @Column({ nullable: false })
     email: string;
 
-    @Column({ nullable: false, default: Roles.CUSTOMER })
-    role: Roles
+    @ManyToOne(() => RoleEntity, (role) => role.users, { nullable: true })
+    @JoinColumn({ name: 'role_id' })
+    role: RoleEntity;
 
     @Column({ nullable: true })
     name?: string;
@@ -30,6 +32,9 @@ export class UserEntity implements IUser {
 
     @OneToMany(() => SessionEntity, (reset_token) => reset_token.user)
     resetTokens: ResetToken[];
+
+    @OneToMany(() => CartItemEntity, (cartItem) => cartItem.user)
+    cartItems: CartItemEntity[];
     
     @CreateDateColumn()
     createdAt: Date;

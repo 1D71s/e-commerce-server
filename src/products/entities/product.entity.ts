@@ -2,6 +2,7 @@ import { SubcategoryEntity } from "src/categories/entities/sub-category.entity";
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm";
 import { IProduct } from "../interfaces/product.interface";
 import { ProductImagesEntity } from "./product-images.entity";
+import { CartItemEntity } from "src/baskets/entities/cart-item.entity";
 
 @Entity('products')
 export class ProductEntity implements IProduct {
@@ -26,6 +27,9 @@ export class ProductEntity implements IProduct {
 
     @OneToMany(() => ProductImagesEntity, (image) => image.product)
     images: ProductImagesEntity[];
+    
+    @OneToMany(() => CartItemEntity, (cartItem) => cartItem.product)
+    cartItems: CartItemEntity[];
 
     @CreateDateColumn()
     createdAt: Date;

@@ -1,13 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateProductDto } from '../dtos/create-product.dto';
 import { ProductsRepository } from 'src/products/repositories/product.repository';
 import { SubCategoryRepository } from 'src/categories/reposiroties/sub-category.repository';
-import { ProductImagesRepository } from '../../../products/repositories/product-images.repository';
 import { IProduct } from 'src/products/interfaces/product.interface';
 import { IProductImages } from 'src/products/interfaces/product-images.interface';
 import { In } from 'typeorm';
 import { IMessage } from 'src/common/dto/responses/message.response';
 import { UpdateProductDto } from '../dtos/update-product.dto';
+import { ProductImagesRepository } from 'src/products/repositories/product-images.repository';
+import { CreateProductDto } from '../dtos/create-product.dto';
 
 @Injectable()
 export class AdminProductsService {
@@ -90,5 +90,5 @@ export class AdminProductsService {
         return await this.productImagesRepository.getMany({
             where: { imageName: In(images) },
         });
-    }    
+    }
 }

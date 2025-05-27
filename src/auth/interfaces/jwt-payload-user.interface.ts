@@ -1,8 +1,8 @@
-import { Roles } from "src/admin/roles/enums/roles.enum";
+import { IRole } from '../../admin/roles/interfaces/role.interface';
 
 export interface IJwtPayload {
     id: number;
     email: string;
     refreshToken: string;
-    role: Roles;
+    role: IRole;
 }

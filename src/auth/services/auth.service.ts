@@ -6,12 +6,11 @@ import { IAccessToken, ISessionAndAccessToken } from '../dto/responses/tokens.re
 import { GoogleUser } from '../interfaces/google-user.interface';
 import { Provider } from 'src/users/interfaces/enums/provider.enum';
 import { Response } from "express";
-import { compareSync } from 'bcrypt';
 import { LoginDto } from '../dto/requests/login.dto';
 import { SessionsService } from 'src/sessions/services/sessions.service';
 import { SessionRepository } from 'src/sessions/repositories/session.repository';
 import { UserRepository } from 'src/users/repositories/user.repository';
-import { genSaltSync, hashSync } from 'bcrypt';
+import { genSaltSync, hashSync, compareSync } from 'bcrypt';
 import { IMessage } from 'src/common/dto/responses/message.response';
 import { REFRESH_TOKEN } from 'src/common/variables';
 import { IJwtPayload } from '../interfaces/jwt-payload-user.interface';
@@ -144,7 +143,7 @@ export class AuthService {
     private async generateTokens(user: UserEntity, agent: string): Promise<ISessionAndAccessToken> {
         const session = await this.sessionsService.getOrUpdateRefreshToken(user, agent);
 
-        this.sessionsService.addSessionToCache(session, agent);
+        await this.sessionsService.addSessionToCache(session, agent);
 
         const tokenPayload: IJwtPayload = {
             id: user.id,
