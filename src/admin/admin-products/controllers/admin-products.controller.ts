@@ -1,14 +1,14 @@
 import { Body, Controller, Delete, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { CreateProductDto } from '../dtos/create-product.dto';
 import { AdminProductsService } from '../services/admin-products.service';
-import { JwtAuthGuard } from 'src/auth/guards/auth.guard';
 import { IMessage } from 'src/common/dto/responses/message.response';
 import { UpdateProductDto } from '../dtos/update-product.dto';
 import { AccessGuard } from '../../accesses/guards/access.guard';
 import { EndpointAccess } from '../../accesses/guards/endpoint-access.guard';
 import { Endpoint } from '../../accesses/enums/endpoint.enum';
+import { JwtAuthGuard } from 'src/web/auth/guards/auth.guard';
 
-@Controller('admin/products')
+@Controller()
 export class AdminProductsController {
     constructor(private readonly adminProductsService: AdminProductsService) {}
 

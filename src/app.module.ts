@@ -1,22 +1,13 @@
 import { MiddlewareConsumer, Module } from '@nestjs/common';
-import { UsersModule } from './users/users.module';
-import { AuthModule } from './auth/auth.module';
-import { DatabaseModule } from './database/database.module';
-import { SessionsModule } from './sessions/sessions.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
-import { CategoriesModule } from './categories/categories.module';
-import { ProductsModule } from './products/product.module';
-import { MailerModule } from './mailer/mailer.module';
-import { AdminCategoriesModule } from './admin/admin-categories/admin-categories.module';
-import { RolesModule } from './admin/roles/roles.module';
-import { AdminProductsModule } from './admin/admin-products/admin-products.module';
 import { LoggerMiddleware } from './common/middlewares/logger.middleware';
 import { RedisModule } from './redis/redis.module';
 import { FilesModule } from './files/files.module';
-import { BasketsModule } from './baskets/baskets.module';
-import { OrdersModule } from './orders/orders.module';
-import { AccessesModule } from './admin/accesses/accesses.module';
+import { WebModule } from './web/web.module';
+import { DatabaseModule } from './database/database.module';
+import { MailerModule } from './mailer/mailer.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
     imports: [
@@ -24,21 +15,12 @@ import { AccessesModule } from './admin/accesses/accesses.module';
             ttl: 6000,
             limit: 3,
         }]),
-        UsersModule,
-        AuthModule,
-        DatabaseModule,
-        SessionsModule,
-        CategoriesModule,
-        ProductsModule,
-        MailerModule,
-        AdminCategoriesModule,
-        RolesModule,
-        AdminProductsModule,
         RedisModule,
         FilesModule,
-        BasketsModule,
-        OrdersModule,
-        AccessesModule,
+        WebModule,
+        DatabaseModule,
+        MailerModule,
+        AdminModule
     ],
     controllers: [],
     providers: [

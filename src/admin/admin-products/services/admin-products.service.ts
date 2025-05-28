@@ -1,13 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { ProductsRepository } from 'src/products/repositories/product.repository';
-import { SubCategoryRepository } from 'src/categories/reposiroties/sub-category.repository';
-import { IProduct } from 'src/products/interfaces/product.interface';
-import { IProductImages } from 'src/products/interfaces/product-images.interface';
 import { In } from 'typeorm';
 import { IMessage } from 'src/common/dto/responses/message.response';
 import { UpdateProductDto } from '../dtos/update-product.dto';
-import { ProductImagesRepository } from 'src/products/repositories/product-images.repository';
 import { CreateProductDto } from '../dtos/create-product.dto';
+import { SubCategoryRepository } from 'src/web/sub-categories/repositories/sub-category.repository';
+import { IProductImages } from 'src/web/products/interfaces/product-images.interface';
+import { IProduct } from 'src/web/products/interfaces/product.interface';
+import { ProductImagesRepository } from 'src/web/products/repositories/product-images.repository';
+import { ProductsRepository } from 'src/web/products/repositories/product.repository';
 
 @Injectable()
 export class AdminProductsService {

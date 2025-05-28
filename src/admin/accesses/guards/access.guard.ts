@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Endpoint } from '../enums/endpoint.enum';
-import { IJwtPayload } from '../../../auth/interfaces/jwt-payload-user.interface';
+import { IJwtPayload } from 'src/web/auth/interfaces/jwt-payload-user.interface';
 
 @Injectable()
 export class AccessGuard implements CanActivate {

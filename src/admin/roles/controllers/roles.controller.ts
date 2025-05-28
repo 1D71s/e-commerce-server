@@ -2,15 +2,15 @@ import { Controller, Post, Query, UseGuards } from '@nestjs/common';
 import { RolesService } from '../services/roles.service';
 import { Patch } from '@nestjs/common';
 import { ChangeRoleDto } from '../dtos/requests/change-role.dto';
-import { JwtAuthGuard } from 'src/auth/guards/auth.guard';
 import { User } from 'src/common/decorators/user.decorator';
-import { IJwtPayload } from 'src/auth/interfaces/jwt-payload-user.interface';
 import { IMessage } from 'src/common/dto/responses/message.response';
 import { AccessGuard } from '../../accesses/guards/access.guard';
 import { EndpointAccess } from '../../accesses/guards/endpoint-access.guard';
 import { Endpoint } from '../../accesses/enums/endpoint.enum';
+import { JwtAuthGuard } from 'src/web/auth/guards/auth.guard';
+import { IJwtPayload } from 'src/web/auth/interfaces/jwt-payload-user.interface';
 
-@Controller('roles')
+@Controller()
 export class RolesController {
     constructor(private readonly rolesService: RolesService) { }
 

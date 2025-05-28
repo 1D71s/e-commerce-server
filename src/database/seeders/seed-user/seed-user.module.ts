@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { SeedUserService } from './seed-user.service';
-import { UsersModule } from 'src/users/users.module';
 import { SeedRoleModule } from '../seed-role/seed-role.module';
+import { UsersModule } from 'src/web/users/users.module';
 
 @Module({
   imports: [

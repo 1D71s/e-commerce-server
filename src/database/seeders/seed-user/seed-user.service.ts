@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { genSaltSync, hashSync } from 'bcrypt';
-import { UserRepository } from 'src/users/repositories/user.repository';
 import { SeedRoleService } from '../seed-role/seed-role.service';
+import { UserRepository } from 'src/web/users/repositories/user.repository';
 
 @Injectable()
 export class SeedUserService {

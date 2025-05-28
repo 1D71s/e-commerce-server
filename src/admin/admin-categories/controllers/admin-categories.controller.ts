@@ -2,14 +2,14 @@ import { Body, Controller, Delete, Param, Post, UseGuards } from '@nestjs/common
 import { AdminCategoriesService } from '../services/admin-categories.service';
 import { CreateCategoryDto } from '../dtos/create-category.dto';
 import { IMessage } from 'src/common/dto/responses/message.response';
-import { ICategory } from 'src/categories/interfaces/category.interface';
 import { UpdateCategoryDto } from '../dtos/update-category.dto';
-import { JwtAuthGuard } from '../../../auth/guards/auth.guard';
 import { AccessGuard } from '../../accesses/guards/access.guard';
 import { EndpointAccess } from '../../accesses/guards/endpoint-access.guard';
 import { Endpoint } from '../../accesses/enums/endpoint.enum';
+import { JwtAuthGuard } from 'src/web/auth/guards/auth.guard';
+import { ICategory } from 'src/web/categories/interfaces/category.interface';
 
-@Controller('admin/categories')
+@Controller()
 export class AdminCategoriesController {
     constructor(
         private readonly adminCategoriesService: AdminCategoriesService,

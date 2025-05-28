@@ -1,9 +1,9 @@
 import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { CategoryRepository } from 'src/categories/reposiroties/category.repository';
 import { CreateCategoryDto } from '../dtos/create-category.dto';
-import { ICategory } from 'src/categories/interfaces/category.interface';
 import { IMessage } from 'src/common/dto/responses/message.response';
 import { UpdateCategoryDto } from '../dtos/update-category.dto';
+import { ICategory } from 'src/web/categories/interfaces/category.interface';
+import { CategoryRepository } from 'src/web/categories/repositories/category.repository';
 
 @Injectable()
 export class AdminCategoriesService {

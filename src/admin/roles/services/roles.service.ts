@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ChangeRoleDto } from '../dtos/requests/change-role.dto';
-import { IJwtPayload } from 'src/auth/interfaces/jwt-payload-user.interface';
 import { IMessage } from 'src/common/dto/responses/message.response';
-import { UserRepository } from 'src/users/repositories/user.repository';
+import { UserRepository } from 'src/web/users/repositories/user.repository';
+import { IJwtPayload } from 'src/web/auth/interfaces/jwt-payload-user.interface';
 
 @Injectable()
 export class RolesService {
