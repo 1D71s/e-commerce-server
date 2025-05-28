@@ -21,8 +21,21 @@ export class UserRepository {
             query.addSelect('user.password');
         }
 
+        if (relations.includes('role')) {
+            query.leftJoinAndSelect('user.role', 'role');
+        }
+
+        if (relations.includes('role.accesses')) {
+            if (!relations.includes('role')) {
+                query.leftJoinAndSelect('user.role', 'role');
+            }
+            query.leftJoinAndSelect('role.accesses', 'accesses');
+        }
+
         for (const relation of relations) {
-            query.leftJoinAndSelect(`user.${relation}`, relation);
+            if (relation !== 'role' && relation !== 'role.accesses') {
+                query.leftJoinAndSelect(`user.${relation}`, relation);
+            }
         }
 
         return query.getOne();

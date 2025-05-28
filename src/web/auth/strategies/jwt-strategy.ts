@@ -21,7 +21,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     async validate(req: Request, payload: IJwtPayload) {
         const userAgent = req.headers['user-agent'];
 
-        const { id, role, refreshToken } = payload;
+        const { id, refreshToken } = payload;
         
         const session = await this.sessionService.validateSession(id, refreshToken, userAgent);
 
@@ -29,7 +29,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
             throw new UnauthorizedException("Token was not found or is not valid.");
         }
 
-        const user = { id, role };
+        const user = { id };
     
         return user;
     }

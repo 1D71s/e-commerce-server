@@ -6,11 +6,13 @@ import { RoleEntity } from './entities/role.entity';
 import { RoleRepository } from './repositories/role.repository';
 import { UserEntity } from 'src/web/users/entities/user.entity';
 import { UsersModule } from 'src/web/users/users.module';
+import { AccessesModule } from '../accesses/accesses.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([UserEntity, RoleEntity]),
-    UsersModule
+    UsersModule,
+    AccessesModule
   ],
   controllers: [RolesController],
   providers: [RolesService, RoleRepository],

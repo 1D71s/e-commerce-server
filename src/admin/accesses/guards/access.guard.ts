@@ -2,12 +2,16 @@ import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from
 import { Reflector } from '@nestjs/core';
 import { Endpoint } from '../enums/endpoint.enum';
 import { IJwtPayload } from 'src/web/auth/interfaces/jwt-payload-user.interface';
+import { UserRepository } from 'src/web/users/repositories/user.repository';
 
 @Injectable()
 export class AccessGuard implements CanActivate {
-    constructor(private readonly reflector: Reflector) { }
+    constructor(
+        private readonly reflector: Reflector,
+        private readonly userRepository: UserRepository
+    ) { }
 
-    canActivate(context: ExecutionContext): boolean {
+    async canActivate(context: ExecutionContext): Promise<boolean> {
         const endpoint: Endpoint = this.reflector.get<Endpoint>('endpoint', context.getHandler());
         if (!endpoint) {
             return true;
@@ -16,11 +20,15 @@ export class AccessGuard implements CanActivate {
         const request = context.switchToHttp().getRequest();
         const user: IJwtPayload = request.user;
 
-        if (!user || !user.role || !user.role.accesses) {
+        const userWithAccesses = await this.userRepository.findById(user.id, {
+            relations: ['role', 'role.accesses']
+        })
+
+        if (!userWithAccesses || !userWithAccesses.role || !userWithAccesses.role.accesses) {
             throw new UnauthorizedException('Access denied');
         }
 
-        const hasAccess = user.role.accesses.some(access => access.endpoint === endpoint);
+        const hasAccess = userWithAccesses.role.accesses.some(access => access.endpoint === endpoint);
         if (!hasAccess) {
             throw new UnauthorizedException('Access denied');
         }

@@ -8,9 +8,12 @@ import { WebModule } from './web/web.module';
 import { DatabaseModule } from './database/database.module';
 import { MailerModule } from './mailer/mailer.module';
 import { AdminModule } from './admin/admin.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserEntity } from './web/users/entities/user.entity';
 
 @Module({
     imports: [
+        TypeOrmModule.forFeature([UserEntity]),
         ThrottlerModule.forRoot([{
             ttl: 6000,
             limit: 3,
@@ -20,7 +23,7 @@ import { AdminModule } from './admin/admin.module';
         WebModule,
         DatabaseModule,
         MailerModule,
-        AdminModule
+        AdminModule,
     ],
     controllers: [],
     providers: [
