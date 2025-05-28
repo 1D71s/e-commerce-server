@@ -5,7 +5,7 @@ import { RoleEntity } from '../../admin/roles/entities/role.entity';
 export interface IUser {
     id: number;
     email: string;
-    role: RoleEntity
+    role?: RoleEntity
     name?: string;
     provider?: Provider;
     password: string;

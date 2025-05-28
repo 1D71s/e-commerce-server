@@ -1,9 +1,9 @@
 export enum Endpoint {
-    GET_ACCESS = 'get-access',
+    GET_ACCESSES = 'get-accesses',
 
     GET_ROLES = 'get-roles',
     CREATE_ROLE = 'create-role',
-    CHANGE_ROLE = 'change-role',
+    UPDATE_ROLE = 'change-role',
     DELETE_ROLE = 'delete-role',
 
     UPLOAD_FILE = 'upload-file',

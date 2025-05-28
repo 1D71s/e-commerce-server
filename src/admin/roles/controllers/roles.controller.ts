@@ -1,4 +1,4 @@
-import { Controller, Query, UseGuards } from '@nestjs/common';
+import { Controller, Post, Query, UseGuards } from '@nestjs/common';
 import { RolesService } from '../services/roles.service';
 import { Patch } from '@nestjs/common';
 import { ChangeRoleDto } from '../dtos/requests/change-role.dto';
@@ -13,11 +13,21 @@ import { Endpoint } from '../../accesses/enums/endpoint.enum';
 @Controller('roles')
 export class RolesController {
     constructor(private readonly rolesService: RolesService) { }
+
+    @Post('create')
+    @UseGuards(JwtAuthGuard, AccessGuard)
+    @EndpointAccess(Endpoint.CREATE_ROLE)
+    async createRole() {}
+
+    @Post('update')
+    @UseGuards(JwtAuthGuard, AccessGuard)
+    @EndpointAccess(Endpoint.UPDATE_ROLE)
+    async updateRole() {}
     
     @Patch('change-role')
     @UseGuards(JwtAuthGuard, AccessGuard)
     @EndpointAccess(Endpoint.CHANGE_USER_ROLE)
-    async updateRole(@Query() query: ChangeRoleDto, @User() user: IJwtPayload): Promise<IMessage> {
+    async updateUserRole(@Query() query: ChangeRoleDto, @User() user: IJwtPayload): Promise<IMessage> {
         return await this.rolesService.updateUserRole(query, user);
     }
 }

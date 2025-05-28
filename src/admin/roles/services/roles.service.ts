@@ -1,5 +1,4 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { Roles } from '../enums/roles.enum';
+import { Injectable } from '@nestjs/common';
 import { ChangeRoleDto } from '../dtos/requests/change-role.dto';
 import { IJwtPayload } from 'src/auth/interfaces/jwt-payload-user.interface';
 import { IMessage } from 'src/common/dto/responses/message.response';
@@ -14,6 +13,4 @@ export class RolesService {
     async updateUserRole(query: ChangeRoleDto, user: IJwtPayload): Promise<IMessage> {
         return { message: 'Role updated' };
     }
-
-    public checkRoleHierarchy(userRole: string, requiredRole: string): void {}
 }

@@ -1,7 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable } from "typeorm";
 import { IRole } from "../interfaces/role.interface";
 import { UserEntity } from '../../../users/entities/user.entity';
-import { AccessInterface } from '../../accesses/interfaces/access.interface';
 import { AccessEntity } from '../../accesses/entities/access.entity';
 
 @Entity('roles')

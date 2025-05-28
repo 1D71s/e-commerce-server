@@ -16,7 +16,7 @@ export class UserEntity implements IUser {
 
     @ManyToOne(() => RoleEntity, (role) => role.users, { nullable: true })
     @JoinColumn({ name: 'role_id' })
-    role: RoleEntity;
+    role?: RoleEntity;
 
     @Column({ nullable: true })
     name?: string;

@@ -41,6 +41,7 @@ export class UsersService {
         const { title, html } = template;
 
         await this.mailerService.sendEmail(email, title, html)
+        
         return { message: "The code has been send to your email" }
     }
 

@@ -1,13 +1,15 @@
-import { IsEnum, IsNotEmpty, IsNumber } from "class-validator";
-import { Roles } from "../../enums/roles.enum";
+import { IsNotEmpty, IsNumber } from "class-validator";
 import { Type } from "class-transformer";
 
 export class ChangeRoleDto {
+
+    @IsNotEmpty()
     @IsNumber()
     @Type(() => Number)
     userId: number;
 
     @IsNotEmpty()
-    @IsEnum(Roles)
-    newRole: Roles;
+    @IsNumber()
+    @Type(() => Number)
+    newRoleId: number;
 }

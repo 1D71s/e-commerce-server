@@ -38,7 +38,7 @@ import { AccessesModule } from './admin/accesses/accesses.module';
         FilesModule,
         BasketsModule,
         OrdersModule,
-        AccessesModule
+        AccessesModule,
     ],
     controllers: [],
     providers: [
