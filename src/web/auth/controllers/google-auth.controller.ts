@@ -25,7 +25,7 @@ export class GoogleAuthController {
     @UseGuards(GoogleGuard)
     googleAuthRedirect(@Req() req: ReqGoogleUser, @Res() res: Response) {
         const token = req.user.accessToken;
-        return res.redirect(`${process.env.THIS_URL}/api/auth/google/success-google?token=${token}`);
+        return res.redirect(`${process.env.GOOGLE_SUCCESS_URL}?token=${token}`);
     }
 
     @Get('success-google')

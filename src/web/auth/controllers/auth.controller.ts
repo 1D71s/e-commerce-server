@@ -57,7 +57,7 @@ export class AuthController {
         if (!tokens) {
             throw new UnauthorizedException();
         }
-        this.authService.sendRefreshTokenToCookies(tokens, res);
+        await this.authService.sendRefreshTokenToCookies(tokens, res);
         res.json({ accessToken: tokens.accessToken });
     }
 }
