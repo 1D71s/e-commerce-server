@@ -18,7 +18,7 @@ const routes = [
         module: AuthModule,
       },
       {
-        path: '/baskets',
+        path: '/basket',
         module: BasketsModule,
       },
       {

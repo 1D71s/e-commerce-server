@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { FindOneOptions, Repository } from 'typeorm';
 import { CartItemEntity } from '../entities/cart-item.entity';
+import { ICartItem } from '../interfaces/cart-item.interface';
 
 @Injectable()
 export class BasketRepository {
@@ -17,7 +18,7 @@ export class BasketRepository {
         return this.repository.find(options);
     }
 
-    async create(data: Partial<CartItemEntity>): Promise<CartItemEntity> {
+    create(data: Omit<ICartItem, 'id'>): CartItemEntity {
         return this.repository.create(data);
     }
 
@@ -26,8 +27,8 @@ export class BasketRepository {
         return this.repository.findOneOrFail({ where: { id } });
     }
 
-    async save(token: CartItemEntity): Promise<CartItemEntity> {
-        return this.repository.save(token);
+    async save(data: CartItemEntity): Promise<CartItemEntity> {
+        return this.repository.save(data);
     }
 
     async delete(id: number): Promise<void> {
