@@ -3,6 +3,7 @@ import { IProduct } from "../interfaces/product.interface";
 import { ProductImagesEntity } from "./product-images.entity";
 import { CartItemEntity } from "src/web/baskets/entities/cart-item.entity";
 import { SubcategoryEntity } from "src/web/sub-categories/entities/sub-category.entity";
+import { UserEntity } from '../../users/entities/user.entity';
 
 @Entity('products')
 export class ProductEntity implements IProduct {
@@ -14,6 +15,10 @@ export class ProductEntity implements IProduct {
 
     @Column({ type: 'varchar', length: 255 })
     title: string;
+
+    @ManyToOne(() => UserEntity, (user) => user.products, { nullable: false })
+    @JoinColumn({ name: 'userId' })
+    user: UserEntity;
 
     @Column({ nullable: false, default: "default" })
     mainPhoto: string;

@@ -31,8 +31,6 @@ export class AccessesService {
             })
         );
 
-        const validAccessesEntities = accessesEntities.filter((entity) => entity !== null);
-
-        return validAccessesEntities;
+        return accessesEntities.filter((entity) => entity !== null);
     }
 }

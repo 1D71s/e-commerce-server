@@ -8,13 +8,15 @@ import { IProductImages } from 'src/web/products/interfaces/product-images.inter
 import { IProduct } from 'src/web/products/interfaces/product.interface';
 import { ProductImagesRepository } from 'src/web/products/repositories/product-images.repository';
 import { ProductsRepository } from 'src/web/products/repositories/product.repository';
+import { UserRepository } from '../../../web/users/repositories/user.repository';
 
 @Injectable()
 export class AdminProductsService {
     constructor(
         private readonly subCategoryRepository: SubCategoryRepository,
         private readonly productRepository: ProductsRepository,
-        private readonly productImagesRepository: ProductImagesRepository
+        private readonly productImagesRepository: ProductImagesRepository,
+        private readonly userRepository: UserRepository,
     ) {}
 
     async deleteProduct(id: number): Promise<IMessage> {
@@ -47,7 +49,7 @@ export class AdminProductsService {
         }
     }
 
-    async createProduct(dto: CreateProductDto): Promise<IMessage> {
+    async createProduct(dto: CreateProductDto, userId: number): Promise<IMessage> {
         const { 
             price, 
             title, 
@@ -56,6 +58,12 @@ export class AdminProductsService {
             subcategoryId,
             images, 
         } = dto;
+
+        const creator = await this.userRepository.findById(userId);
+
+        if (!creator) {
+            throw new NotFoundException('User not found');
+        }
 
         const subCategory = await this.subCategoryRepository.getOne({
             where: { id: subcategoryId }
@@ -74,6 +82,7 @@ export class AdminProductsService {
         ProductBuild.description = description;
         ProductBuild.subCategory = subCategory;
         ProductBuild.images = productImages;
+        ProductBuild.user = creator;
 
         await this.productRepository.save(ProductBuild);
 

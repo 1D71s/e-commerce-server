@@ -8,9 +8,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { ICartItem } from '../interfaces/cart-item.interface';
 
 @Entity('cart_items')
-export class CartItemEntity {
+export class CartItemEntity implements ICartItem {
     @PrimaryGeneratedColumn()
     id: number;
 

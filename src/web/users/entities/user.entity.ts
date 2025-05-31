@@ -5,6 +5,7 @@ import { ResetToken } from "./reset-token.entity";
 import { RoleEntity } from "src/admin/roles/entities/role.entity";
 import { SessionEntity } from 'src/web/sessions/entities/session.entity';
 import { CartItemEntity } from 'src/web/baskets/entities/cart-item.entity';
+import { ProductEntity } from '../../products/entities/product.entity';
 
 @Entity('users')
 export class UserEntity implements IUser {
@@ -35,7 +36,10 @@ export class UserEntity implements IUser {
 
     @OneToMany(() => CartItemEntity, (cartItem) => cartItem.user)
     cartItems: CartItemEntity[];
-    
+
+    @OneToMany(() => ProductEntity, (product) => product.user)
+    products: ProductEntity[];
+
     @CreateDateColumn()
     createdAt: Date;
 }
