@@ -1,7 +1,6 @@
 import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { RolesService } from '../services/roles.service';
 import { Patch } from '@nestjs/common';
-import { ChangeRoleDto } from '../dtos/requests/change-role.dto';
 import { IMessage } from 'src/common/dto/responses/message.response';
 import { AccessGuard } from '../../accesses/guards/access.guard';
 import { EndpointAccess } from '../../accesses/guards/endpoint-access.guard';
@@ -13,7 +12,7 @@ import { JwtAuthAdminGuard } from '../../admin-auth/guards/auth.admin.guard';
 
 @Controller()
 export class RolesController {
-    constructor(private readonly rolesService: RolesService) { }
+    constructor(private readonly rolesService: RolesService) {}
 
     @Get()
     @UseGuards(JwtAuthAdminGuard, AccessGuard)
@@ -34,12 +33,5 @@ export class RolesController {
     @EndpointAccess(Endpoint.UPDATE_ROLE)
     async updateRole(@Param('id') id: number, @Body() dto: UpdateRoleDto): Promise<IMessage> {
         return this.rolesService.updateRole(dto, id)
-    }
-    
-    @Patch('change-role')
-    @UseGuards(JwtAuthAdminGuard, AccessGuard)
-    @EndpointAccess(Endpoint.CHANGE_USER_ROLE)
-    async updateUserRole(@Query() query: ChangeRoleDto): Promise<IMessage> {
-        return await this.rolesService.updateUserRole(query);
     }
 }

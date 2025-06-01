@@ -13,6 +13,10 @@ const routes = [
     path: 'admin',
     children: [
       {
+        path: '/',
+        module: AdminsModule,
+      },
+      {
         path: '/roles',
         module: RolesModule,
       },
@@ -31,10 +35,6 @@ const routes = [
       {
         path: '/sub-categories',
         module: AdminSubCategoriesModule,
-      },
-      {
-        path: '/admins',
-        module: AdminsModule,
       },
       {
         path: '/auth',

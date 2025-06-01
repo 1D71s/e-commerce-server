@@ -1,7 +1,5 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
-import { ChangeRoleDto } from '../dtos/requests/change-role.dto';
 import { IMessage } from 'src/common/dto/responses/message.response';
-import { UserRepository } from 'src/web/users/repositories/user.repository';
 import { RoleRepository } from '../repositories/role.repository';
 import { IRole } from '../interfaces/role.interface';
 import { CreateRoleDto } from '../dtos/requests/create-role.dto';
@@ -11,7 +9,6 @@ import { AccessesService } from 'src/admin/accesses/services/accesses.service';
 @Injectable()
 export class RolesService {
     constructor(
-        private readonly userRepository: UserRepository,
         private readonly roleRepository: RoleRepository,
         private readonly accessesService: AccessesService
     ) {}
@@ -53,21 +50,5 @@ export class RolesService {
         await this.roleRepository.save(role);
 
         return { message: 'Role has been updated!' };
-    }
-
-    async updateUserRole(query: ChangeRoleDto): Promise<IMessage> {
-        const { newRoleId, userId } = query;
-        const role = await this.roleRepository.findByFields({ id: newRoleId })
-
-        if (!role) throw new NotFoundException("Role was not found")
-
-        const userForNewRole = await this.userRepository.findById(userId)
-
-        if (!userForNewRole) throw new NotFoundException("User was not found")
-
-        // userForNewRole.role = role;
-        await this.userRepository.save(userForNewRole)
-
-        return { message: 'Role updated' };
     }
 }

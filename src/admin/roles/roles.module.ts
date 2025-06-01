@@ -7,11 +7,11 @@ import { RoleRepository } from './repositories/role.repository';
 import { UserEntity } from 'src/web/users/entities/user.entity';
 import { UsersModule } from 'src/web/users/users.module';
 import { AccessesModule } from '../accesses/accesses.module';
+import { AdminsModule } from '../admins/admins.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([UserEntity, RoleEntity]),
-    UsersModule,
     AccessesModule
   ],
   controllers: [RolesController],

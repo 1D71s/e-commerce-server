@@ -21,6 +21,10 @@ export class AdminRepository {
         return this.repository.findOne(options);
     }
 
+    async getMany(): Promise<AdminEntity[]> {
+        return this.repository.find();
+    }
+
     create(user: Partial<AdminEntity>): AdminEntity {
         return this.repository.create(user);
     }

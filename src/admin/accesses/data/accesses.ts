@@ -12,8 +12,6 @@ export const accesses: IAccess[] = [
 
     { title: 'Upload file', category: AccessCategory.FILES, endpoint: Endpoint.UPLOAD_FILE },
 
-    { title: 'Change User Role', category: AccessCategory.ROLES, endpoint: Endpoint.CHANGE_USER_ROLE },
-
     { title: 'View Users', category: AccessCategory.USERS, endpoint: Endpoint.GET_USERS },
 
     { title: 'Create Category', category: AccessCategory.CATEGORIES, endpoint: Endpoint.CREATE_CATEGORY },
@@ -27,4 +25,9 @@ export const accesses: IAccess[] = [
     { title: 'Create Product', category: AccessCategory.PRODUCTS, endpoint: Endpoint.CREATE_PRODUCT },
     { title: 'Update Product', category: AccessCategory.PRODUCTS, endpoint: Endpoint.UPDATE_PRODUCT },
     { title: 'Delete Product', category: AccessCategory.PRODUCTS, endpoint: Endpoint.DELETE_PRODUCT },
+
+    { title: 'View Admins', category: AccessCategory.ADMINS, endpoint: Endpoint.GET_ADMINS },
+    { title: "Create admin", category: AccessCategory.ADMINS, endpoint: Endpoint.CREATE_ADMIN },
+    { title: "Update admin", category: AccessCategory.ADMINS, endpoint: Endpoint.UPDATE_ADMIN },
+    { title: "Delete admin", category: AccessCategory.ADMINS, endpoint: Endpoint.DELETE_ADMIN}
 ];

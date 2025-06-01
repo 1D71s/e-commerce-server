@@ -6,4 +6,5 @@ export enum AccessCategory {
     ACCESS = 'Access',
     ROLES = 'Roles',
     FILES = 'File',
+    ADMINS = 'Admins',
 }

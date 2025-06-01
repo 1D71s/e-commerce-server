@@ -8,8 +8,6 @@ export enum Endpoint {
 
     UPLOAD_FILE = 'upload-file',
 
-    CHANGE_USER_ROLE = 'change-user-role',
-
     GET_USERS = 'get-users',
 
     CREATE_CATEGORY = 'create-category',
@@ -23,4 +21,9 @@ export enum Endpoint {
     CREATE_PRODUCT = 'create-product',
     UPDATE_PRODUCT = 'update-product',
     DELETE_PRODUCT = 'delete-product',
+
+    GET_ADMINS = 'get-admins',
+    CREATE_ADMIN = 'create-admin',
+    UPDATE_ADMIN = 'update-admin',
+    DELETE_ADMIN = 'delete-admin',
 }

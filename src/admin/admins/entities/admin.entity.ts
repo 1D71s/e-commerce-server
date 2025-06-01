@@ -11,9 +11,9 @@ export class AdminEntity implements IAdmin {
     @Column({ nullable: false })
     email: string;
 
-    @ManyToOne(() => RoleEntity, (role) => role.admins, { nullable: true })
+    @ManyToOne(() => RoleEntity, (role) => role.admins, { nullable: false })
     @JoinColumn({ name: 'role_id' })
-    role?: RoleEntity;
+    role: RoleEntity;
 
     @Column({ nullable: true })
     name?: string;
