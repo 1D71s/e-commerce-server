@@ -5,7 +5,7 @@ import { AdminProductsModule } from './admin-products/admin-products.module';
 import { RolesModule } from './roles/roles.module';
 import { RouterModule } from '@nestjs/core';
 import { AdminSubCategoriesModule } from './admin-sub-categories/admin-sub-categories.module';
-import { AdminsModule } from './admins/admins.module';
+import { AdminUsersModule } from './admin-users/admin-users.module';
 import { AdminAuthModule } from './admin-auth/admin-auth.module';
 
 const routes = [
@@ -13,8 +13,8 @@ const routes = [
     path: 'admin',
     children: [
       {
-        path: '/',
-        module: AdminsModule,
+        path: '/users',
+        module: AdminUsersModule,
       },
       {
         path: '/roles',
@@ -52,7 +52,7 @@ const routes = [
     AdminProductsModule,
     AccessesModule,
     AdminSubCategoriesModule,
-    AdminsModule,
+    AdminUsersModule,
     AdminAuthModule
   ]
 })

@@ -7,7 +7,7 @@ import { RoleRepository } from './repositories/role.repository';
 import { UserEntity } from 'src/web/users/entities/user.entity';
 import { UsersModule } from 'src/web/users/users.module';
 import { AccessesModule } from '../accesses/accesses.module';
-import { AdminsModule } from '../admins/admins.module';
+import { AdminUsersModule } from '../admin-users/admin-users.module';
 
 @Module({
   imports: [

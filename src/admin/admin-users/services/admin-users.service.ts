@@ -1,24 +1,24 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
-import { AdminRepository } from '../repositories/admin.repository';
-import { IAdmin } from '../interfaces/admin.interface';
+import { AdminUserRepository } from '../repositories/admin-user.repository';
+import { IAdminUser } from '../interfaces/admin-user.interface';
 import { IMessage } from '../../../common/dto/responses/message.response';
-import { CreateAdminDto } from '../dtos/create-admin.dto';
-import { UpdateAdminDto } from '../dtos/update-admin.dto';
+import { CreateAdminUserDto } from '../dtos/create-admin-user.dto';
+import { UpdateAdminUserDto } from '../dtos/update-admin-user.dto';
 import { genSaltSync, hashSync } from 'bcrypt';
 import { RoleRepository } from '../../roles/repositories/role.repository';
 
 @Injectable()
-export class AdminsService {
+export class AdminUsersService {
     constructor(
-        private readonly adminRepository: AdminRepository,
+        private readonly adminRepository: AdminUserRepository,
         private readonly roleRepository: RoleRepository,
     ) {}
 
-    async getAll(): Promise<IAdmin[]> {
+    async getAll(): Promise<IAdminUser[]> {
         return this.adminRepository.getMany();
     }
 
-    async createAdmin(dto: CreateAdminDto): Promise<IMessage> {
+    async createAdminUser(dto: CreateAdminUserDto): Promise<IMessage> {
         const { email, password, roleId, name } = dto;
         const existingAdmin = await this.adminRepository.getOne({ where: { email } });
 
@@ -45,7 +45,7 @@ export class AdminsService {
         return { message: 'Admin created successfully.' };
     }
 
-    async updateAdmin(dto: UpdateAdminDto, adminId: number): Promise<IMessage> {
+    async updateAdminUser(dto: UpdateAdminUserDto, adminId: number): Promise<IMessage> {
         const { email, password, roleId, name } = dto;
 
         const admin = await this.adminRepository.getOne({ where: { id: adminId } });
@@ -83,7 +83,7 @@ export class AdminsService {
     }
 
 
-    async deleteAdmin(id: number): Promise<IMessage> {
+    async deleteAdminUser(id: number): Promise<IMessage> {
         const admin = await this.adminRepository.getOne({ where: { id } });
         if (!admin) throw new NotFoundException('Admin not found.');
 

@@ -3,13 +3,13 @@ import { PassportStrategy } from '@nestjs/passport';
 import * as process from "process";
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { IAdminJwtPayload } from '../interfaces/admin-jwt-payload.interface';
-import { AdminRepository } from '../../admins/repositories/admin.repository';
-import { IAdmin } from '../../admins/interfaces/admin.interface';
+import { AdminUserRepository } from '../../admin-users/repositories/admin-user.repository';
+import { IAdminUser } from '../../admin-users/interfaces/admin-user.interface';
 
 @Injectable()
 export class JwtAdminStrategy extends PassportStrategy(Strategy, 'jwt-admin') {
     constructor(
-      private readonly adminRepository: AdminRepository,
+      private readonly adminRepository: AdminUserRepository,
     ) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -18,7 +18,7 @@ export class JwtAdminStrategy extends PassportStrategy(Strategy, 'jwt-admin') {
         });
     }
 
-    async validate(payload: IAdminJwtPayload): Promise<IAdmin> {
+    async validate(payload: IAdminJwtPayload): Promise<IAdminUser> {
         const { id } = payload;
         const admin = await this.adminRepository.getOne({
             where: { id },

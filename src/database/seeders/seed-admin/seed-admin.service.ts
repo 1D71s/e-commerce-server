@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { genSaltSync, hashSync } from 'bcrypt';
 import { SeedRoleService } from '../seed-role/seed-role.service';
-import { AdminRepository } from '../../../admin/admins/repositories/admin.repository';
+import { AdminUserRepository } from '../../../admin/admin-users/repositories/admin-user.repository';
 
 @Injectable()
 export class SeedAdminService {
@@ -10,7 +10,7 @@ export class SeedAdminService {
     private ADMIN_PASSWORD = process.env.ADMIN_PASSWORD
 
     constructor(
-        private readonly adminRepository: AdminRepository,
+        private readonly adminRepository: AdminUserRepository,
         private readonly seedRoleService: SeedRoleService
     ) {}
 

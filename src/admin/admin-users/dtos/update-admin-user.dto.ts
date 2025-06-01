@@ -1,7 +1,7 @@
 import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, MinLength, Validate } from 'class-validator';
 import { IsPasswordsMatchingConstraint } from "src/common/decorators/is-passwords-matching-constraint.decorator";
 
-export class UpdateAdminDto {
+export class UpdateAdminUserDto {
     @IsString()
     @IsOptional()
     name?: string;

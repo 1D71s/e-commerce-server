@@ -1,12 +1,11 @@
 import { ISubCategory } from "src/web/sub-categories/interfaces/sub-category.interface";
 import { IProductImages } from "./product-images.interface";
-import { IUser } from '../../users/interfaces/user.interface';
-import { IAdmin } from '../../../admin/admins/interfaces/admin.interface';
+import { IAdminUser } from '../../../admin/admin-users/interfaces/admin-user.interface';
 
 export class IProduct {
     id: number;
     title: string;
-    admin: IAdmin;
+    admin: IAdminUser;
     mainPhoto: string;
     price: number;
     images: IProductImages[]

@@ -1,8 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable } from "typeorm";
 import { IRole } from "../interfaces/role.interface";
 import { AccessEntity } from '../../accesses/entities/access.entity';
-import { UserEntity } from "src/web/users/entities/user.entity";
-import { AdminEntity } from '../../admins/entities/admin.entity';
+import { AdminUserEntity } from '../../admin-users/entities/admin.entity';
 
 @Entity('roles')
 export class RoleEntity implements IRole {
@@ -12,8 +11,8 @@ export class RoleEntity implements IRole {
     @Column({ nullable: false, unique: true })
     name: string;
 
-    @OneToMany(() => AdminEntity, (admin) => admin.role)
-    admins: AdminEntity[];
+    @OneToMany(() => AdminUserEntity, (adminUser) => adminUser.role)
+    admins: AdminUserEntity[];
 
     @ManyToMany(() => AccessEntity, (access) => access.roles)
     @JoinTable({

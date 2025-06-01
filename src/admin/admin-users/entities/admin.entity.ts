@@ -1,10 +1,10 @@
 import { Entity, PrimaryGeneratedColumn, CreateDateColumn, Column, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
 import { RoleEntity } from "src/admin/roles/entities/role.entity";
-import { IAdmin } from '../interfaces/admin.interface';
+import { IAdminUser } from '../interfaces/admin-user.interface';
 import { ProductEntity } from '../../../web/products/entities/product.entity';
 
-@Entity('admins')
-export class AdminEntity implements IAdmin {
+@Entity('admin_users')
+export class AdminUserEntity implements IAdminUser {
     @PrimaryGeneratedColumn('increment')
     id: number;
 

@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AccessEntity } from './entities/access.entity';
 import { AccessRepository } from './repositories/access.repository';
 import { UsersModule } from 'src/web/users/users.module';
-import { AdminsModule } from '../admins/admins.module';
+import { AdminUsersModule } from '../admin-users/admin-users.module';
 
 @Module({
   imports: [

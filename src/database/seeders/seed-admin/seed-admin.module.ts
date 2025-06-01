@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { SeedAdminService } from './seed-admin.service';
 import { SeedRoleModule } from '../seed-role/seed-role.module';
-import { AdminsModule } from '../../../admin/admins/admins.module';
+import { AdminUsersModule } from '../../../admin/admin-users/admin-users.module';
 
 @Module({
   imports: [
-    AdminsModule,
+    AdminUsersModule,
     SeedRoleModule
   ],
   providers: [SeedAdminService],

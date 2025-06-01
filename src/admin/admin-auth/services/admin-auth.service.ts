@@ -1,16 +1,16 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { IAccessToken } from '../../../web/auth/dto/responses/tokens.response';
 import { compareSync } from 'bcrypt';
-import { AdminRepository } from '../../admins/repositories/admin.repository';
+import { AdminUserRepository } from '../../admin-users/repositories/admin-user.repository';
 import { LoginAdminDto } from '../dtos/login-admin.dto';
-import { AdminEntity } from '../../admins/entities/admin.entity';
+import { AdminUserEntity } from '../../admin-users/entities/admin.entity';
 import { JwtService } from '@nestjs/jwt';
 import { IAdminJwtPayload } from '../interfaces/admin-jwt-payload.interface';
 
 @Injectable()
 export class AdminAuthService {
     constructor(
-        private readonly adminRepository: AdminRepository,
+        private readonly adminRepository: AdminUserRepository,
         private readonly jwtService: JwtService,
     ) {}
 
@@ -30,7 +30,7 @@ export class AdminAuthService {
         return this.generateToken(admin);
     }
 
-    private async generateToken(admin: AdminEntity): Promise<IAccessToken> {
+    private async generateToken(admin: AdminUserEntity): Promise<IAccessToken> {
         const tokenPayload: IAdminJwtPayload = {
             id: admin.id,
             email: admin.email,

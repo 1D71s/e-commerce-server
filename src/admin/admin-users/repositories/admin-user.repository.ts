@@ -1,16 +1,16 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { FindOneOptions, Repository } from 'typeorm';
-import { AdminEntity } from '../entities/admin.entity';
+import { AdminUserEntity } from '../entities/admin.entity';
 
 @Injectable()
-export class AdminRepository {
+export class AdminUserRepository {
     constructor(
-      @InjectRepository(AdminEntity)
-      private readonly repository: Repository<AdminEntity>
+      @InjectRepository(AdminUserEntity)
+      private readonly repository: Repository<AdminUserEntity>
     ) {}
 
-    async getOne(options: FindOneOptions<AdminEntity>, withPassword: boolean = false): Promise<AdminEntity> {
+    async getOne(options: FindOneOptions<AdminUserEntity>, withPassword: boolean = false): Promise<AdminUserEntity> {
         if (withPassword) {
             return this.repository.findOne({
                 ...options,
@@ -21,23 +21,23 @@ export class AdminRepository {
         return this.repository.findOne(options);
     }
 
-    async getMany(): Promise<AdminEntity[]> {
+    async getMany(): Promise<AdminUserEntity[]> {
         return this.repository.find();
     }
 
-    create(user: Partial<AdminEntity>): AdminEntity {
+    create(user: Partial<AdminUserEntity>): AdminUserEntity {
         return this.repository.create(user);
     }
 
-    save(user: AdminEntity): Promise<AdminEntity> {
+    save(user: AdminUserEntity): Promise<AdminUserEntity> {
         return this.repository.save(user);
     }
 
-    merge(target: AdminEntity, source: Partial<AdminEntity>): AdminEntity {
+    merge(target: AdminUserEntity, source: Partial<AdminUserEntity>): AdminUserEntity {
         return this.repository.merge(target, source);
     }
 
-    async remove(user: AdminEntity): Promise<void> {
+    async remove(user: AdminUserEntity): Promise<void> {
         await this.repository.remove(user);
     }
 }
