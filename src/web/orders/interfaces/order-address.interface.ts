@@ -5,6 +5,6 @@ export interface IOrderAddress {
     deliveryProvider: DeliveryProvider;
     address: string;
     city: string;
-    zipCode: string;
-    message: string;
+    zipCode?: string;
+    message?: string;
 }

@@ -1,3 +1,9 @@
-import { ICartItem } from '../../baskets/interfaces/cart-item.interface';
+import { IProduct } from '../../products/interfaces/product.interface';
+import { IOrder } from './order.interface';
 
-export interface IOrderQuantity extends ICartItem {}
+export interface IOrderQuantity {
+    id: number;
+    order: IOrder;
+    product: IProduct;
+    quantity: number;
+}
