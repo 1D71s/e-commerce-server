@@ -82,7 +82,7 @@ export class AdminProductsService {
         ProductBuild.description = description;
         ProductBuild.subCategory = subCategory;
         ProductBuild.images = productImages;
-        ProductBuild.user = creator;
+        // ProductBuild.user = creator;
 
         await this.productRepository.save(ProductBuild);
 

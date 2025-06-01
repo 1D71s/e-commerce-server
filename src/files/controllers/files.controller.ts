@@ -6,14 +6,14 @@ import { FilenameResponseDto } from '../dtos/response/filename-response.dto';
 import { AccessGuard } from '../../admin/accesses/guards/access.guard';
 import { EndpointAccess } from '../../admin/accesses/guards/endpoint-access.guard';
 import { Endpoint } from '../../admin/accesses/enums/endpoint.enum';
-import { JwtAuthGuard } from 'src/web/auth/guards/auth.guard';
+import { JwtAuthAdminGuard } from '../../admin/admin-auth/guards/auth.admin.guard';
 
 @Controller('files')
 export class FilesController {
     constructor(private readonly filesService: FilesService) {}
 
     @Post('upload')
-    @UseGuards(JwtAuthGuard, AccessGuard)
+    @UseGuards(JwtAuthAdminGuard, AccessGuard)
     @EndpointAccess(Endpoint.UPLOAD_FILE)
     @UseInterceptors(FileInterceptor('file'))
     async uploadFile(@UploadedFile() file: Express.Multer.File): Promise<FilenameResponseDto> {

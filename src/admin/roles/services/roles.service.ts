@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException, Query } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { ChangeRoleDto } from '../dtos/requests/change-role.dto';
 import { IMessage } from 'src/common/dto/responses/message.response';
 import { UserRepository } from 'src/web/users/repositories/user.repository';
@@ -55,7 +55,6 @@ export class RolesService {
         return { message: 'Role has been updated!' };
     }
 
-
     async updateUserRole(query: ChangeRoleDto): Promise<IMessage> {
         const { newRoleId, userId } = query;
         const role = await this.roleRepository.findByFields({ id: newRoleId })
@@ -66,7 +65,7 @@ export class RolesService {
 
         if (!userForNewRole) throw new NotFoundException("User was not found")
 
-        userForNewRole.role = role;
+        // userForNewRole.role = role;
         await this.userRepository.save(userForNewRole)
 
         return { message: 'Role updated' };

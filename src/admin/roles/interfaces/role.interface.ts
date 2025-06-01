@@ -1,9 +1,9 @@
-import { IUser } from 'src/web/users/interfaces/user.interface';
 import { IAccess } from '../../accesses/interfaces/access.interface';
+import { IAdmin } from '../../admins/interfaces/admin.interface';
 
 export interface IRole {
     id: number;
     name: string;
-    users: IUser[];
+    admins: IAdmin[];
     accesses: IAccess[]
 }

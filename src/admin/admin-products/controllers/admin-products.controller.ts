@@ -6,30 +6,30 @@ import { UpdateProductDto } from '../dtos/update-product.dto';
 import { AccessGuard } from '../../accesses/guards/access.guard';
 import { EndpointAccess } from '../../accesses/guards/endpoint-access.guard';
 import { Endpoint } from '../../accesses/enums/endpoint.enum';
-import { JwtAuthGuard } from 'src/web/auth/guards/auth.guard';
 import { User } from '../../../common/decorators/user.decorator';
 import { IJwtPayload } from '../../../web/auth/interfaces/jwt-payload-user.interface';
+import { JwtAuthAdminGuard } from '../../admin-auth/guards/auth.admin.guard';
 
 @Controller()
 export class AdminProductsController {
     constructor(private readonly adminProductsService: AdminProductsService) {}
 
     @Delete(':id')
-    @UseGuards(JwtAuthGuard, AccessGuard)
+    @UseGuards(JwtAuthAdminGuard, AccessGuard)
     @EndpointAccess(Endpoint.DELETE_PRODUCT)
     async deleteProduct(@Param('id') id: number): Promise<IMessage> {
         return await this.adminProductsService.deleteProduct(id); 
     }
 
     @Put(':id')
-    @UseGuards(JwtAuthGuard, AccessGuard)
+    @UseGuards(JwtAuthAdminGuard, AccessGuard)
     @EndpointAccess(Endpoint.UPDATE_PRODUCT)
     async updateProduct(@Param('id') id: number, @Body() dto: UpdateProductDto): Promise<IMessage> {
         return await this.adminProductsService.updateProduct(id, dto);
     }
 
     @Post()
-    @UseGuards(JwtAuthGuard, AccessGuard)
+    @UseGuards(JwtAuthAdminGuard, AccessGuard)
     @EndpointAccess(Endpoint.CREATE_PRODUCT)
     async createProduct(@Body() dto: CreateProductDto, @User() user: IJwtPayload): Promise<IMessage> {
         return await this.adminProductsService.createProduct(dto, user.id);

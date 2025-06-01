@@ -5,11 +5,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AccessEntity } from './entities/access.entity';
 import { AccessRepository } from './repositories/access.repository';
 import { UsersModule } from 'src/web/users/users.module';
+import { AdminsModule } from '../admins/admins.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([AccessEntity]),
-    UsersModule
   ],
   controllers: [AccessesController],
   providers: [AccessesService, AccessRepository],

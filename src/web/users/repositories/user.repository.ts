@@ -60,7 +60,7 @@ export class UserRepository {
 
     async findAll(): Promise<UserEntity[]> {
         return this.repository.find({
-            select: ['id', 'email', 'name', 'createdAt', 'role', 'provider'],
+            select: ['id', 'email', 'name', 'createdAt', 'provider'],
         });
     }    
 

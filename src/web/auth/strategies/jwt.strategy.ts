@@ -6,7 +6,7 @@ import { IJwtPayload } from '../interfaces/jwt-payload-user.interface';
 import { SessionsService } from 'src/web/sessions/services/sessions.service';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class JwtStrategy extends PassportStrategy(Strategy, 'jwt-user') {
     constructor(
         private readonly sessionService: SessionsService,
     ) {

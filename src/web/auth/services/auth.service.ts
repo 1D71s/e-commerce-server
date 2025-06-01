@@ -47,7 +47,6 @@ export class AuthService {
         const ERROR_MESSAGE = 'Incorrect email or password.';
         const user = await this.userRepository.findByEmail(email, {
             includePassword: true,
-            relations: ['role'],
         });
 
         if (!user) {
@@ -152,7 +151,6 @@ export class AuthService {
             id: user.id,
             email: user.email,
             refreshToken: session.token,
-            role: user.role,
         };
         
         const accessToken = this.jwtService.sign(tokenPayload);

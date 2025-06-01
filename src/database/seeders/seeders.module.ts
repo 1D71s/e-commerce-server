@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { SeedUserModule } from './seed-user/seed-user.module';
+import { SeedAdminModule } from './seed-admin/seed-admin.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { getConfig } from '../config';
@@ -8,7 +8,7 @@ import { getConfig } from '../config';
   imports: [
     ConfigModule.forRoot(), 
     TypeOrmModule.forRoot(getConfig()),
-    SeedUserModule
+    SeedAdminModule
   ],
   controllers: [],
   providers: [],
