@@ -7,8 +7,8 @@ import { AccessGuard } from '../../accesses/guards/access.guard';
 import { EndpointAccess } from '../../accesses/guards/endpoint-access.guard';
 import { Endpoint } from '../../accesses/enums/endpoint.enum';
 import { User } from '../../../common/decorators/user.decorator';
-import { IJwtPayload } from '../../../web/auth/interfaces/jwt-payload-user.interface';
 import { JwtAuthAdminGuard } from '../../admin-auth/guards/auth.admin.guard';
+import { IAdminJwtPayload } from '../../admin-auth/interfaces/admin-jwt-payload.interface';
 
 @Controller()
 export class AdminProductsController {
@@ -31,7 +31,7 @@ export class AdminProductsController {
     @Post()
     @UseGuards(JwtAuthAdminGuard, AccessGuard)
     @EndpointAccess(Endpoint.CREATE_PRODUCT)
-    async createProduct(@Body() dto: CreateProductDto, @User() user: IJwtPayload): Promise<IMessage> {
+    async createProduct(@Body() dto: CreateProductDto, @User() user: IAdminJwtPayload): Promise<IMessage> {
         return await this.adminProductsService.createProduct(dto, user.id);
     }
 }
