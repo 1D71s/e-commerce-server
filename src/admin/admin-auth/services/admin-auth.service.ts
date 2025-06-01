@@ -10,14 +10,14 @@ import { IAdminJwtPayload } from '../interfaces/admin-jwt-payload.interface';
 @Injectable()
 export class AdminAuthService {
     constructor(
-        private readonly adminRepository: AdminUserRepository,
+        private readonly adminUserRepository: AdminUserRepository,
         private readonly jwtService: JwtService,
     ) {}
 
     async login(dto: LoginAdminDto): Promise<IAccessToken> {
         const { email, password } = dto;
         const ERROR_MESSAGE = 'Incorrect email or password.';
-        const admin = await this.adminRepository.getOne({ where: { email } }, true);
+        const admin = await this.adminUserRepository.getOne({ where: { email } }, true);
 
         if (!admin) {
             throw new NotFoundException(ERROR_MESSAGE)
