@@ -6,7 +6,7 @@ import {
     OneToMany,
     JoinColumn,
     CreateDateColumn,
-    UpdateDateColumn,
+    UpdateDateColumn, OneToOne,
 } from 'typeorm';
 import { PaymentMethod } from '../enums/payment-method.enum';
 import { OrderStatus } from '../enums/order-status.enum';
@@ -51,8 +51,11 @@ export class OrderEntity implements IOrder{
     })
     quantities: OrderQuantityEntity[];
 
-    @ManyToOne(() => OrderAddressEntity, { cascade: true, eager: true })
-    @JoinColumn({ name: 'addressId' })
+    @OneToOne(() => OrderAddressEntity, address => address.order, {
+        cascade: true,
+        eager: true,
+    })
+    @JoinColumn()
     address: OrderAddressEntity;
 
     @CreateDateColumn()

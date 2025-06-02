@@ -17,9 +17,7 @@ import { ProductsModule } from '../products/product.module';
       OrderEntity,
       OrderQuantityEntity,
       OrderAddressEntity
-    ]),
-    UsersModule,
-    ProductsModule
+    ])
   ],
   controllers: [OrdersController],
   providers: [

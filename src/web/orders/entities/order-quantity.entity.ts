@@ -15,7 +15,6 @@ export class OrderQuantityEntity implements IOrderQuantity{
     id: number;
 
     @ManyToOne(() => OrderEntity, order => order.quantities, { onDelete: 'CASCADE' })
-    @JoinColumn({ name: 'orderId' })
     order: OrderEntity;
 
     @ManyToOne(() => ProductEntity, { eager: true })

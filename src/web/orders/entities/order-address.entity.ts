@@ -1,10 +1,11 @@
 import {
     Entity,
     PrimaryGeneratedColumn,
-    Column,
+    Column, OneToOne, JoinColumn,
 } from 'typeorm';
 import { DeliveryProvider } from '../enums/delivery-provider.enum';
 import { IOrderAddress } from '../interfaces/order-address.interface';
+import { OrderEntity } from './order.entity';
 
 @Entity('order_addresses')
 export class OrderAddressEntity implements IOrderAddress{
@@ -25,4 +26,8 @@ export class OrderAddressEntity implements IOrderAddress{
 
     @Column({ type: 'text', nullable: true })
     message?: string;
+
+    @OneToOne(() => OrderEntity, order => order.address, { onDelete: 'CASCADE' })
+    @JoinColumn()
+    order: OrderEntity;
 }

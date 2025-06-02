@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOneOptions, Repository } from 'typeorm';
+import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { OrderEntity } from '../entities/order.entity';
 
 @Injectable()
@@ -14,9 +14,10 @@ export class OrderRepository {
         return this.repository.findOne(options);
     }
 
-    async getMany(options?: FindOneOptions<OrderEntity>): Promise<OrderEntity[]> {
-        return this.repository.find(options);
+    async findManyWithOptions(options: FindManyOptions<OrderEntity>): Promise<[OrderEntity[], number]> {
+        return this.repository.findAndCount(options);
     }
+
 
     async create(orderData: Partial<OrderEntity>): Promise<OrderEntity> {
         const order = this.repository.create(orderData);
