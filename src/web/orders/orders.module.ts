@@ -26,5 +26,8 @@ import { ProductsModule } from '../products/product.module';
     OrderAddressRepository,
     OrderQuantityRepository
   ],
+  exports: [
+    OrderRepository,
+  ]
 })
 export class OrdersModule {}

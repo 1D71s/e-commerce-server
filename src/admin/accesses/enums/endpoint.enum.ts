@@ -26,4 +26,8 @@ export enum Endpoint {
     CREATE_ADMIN = 'create-admin',
     UPDATE_ADMIN = 'update-admin',
     DELETE_ADMIN = 'delete-admin',
+
+    GET_ORDERS = 'get-orders',
+    HANDLE_ORDER = 'handle-order',
+    DELETE_ORDER = 'delete-order',
 }

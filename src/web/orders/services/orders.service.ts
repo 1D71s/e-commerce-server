@@ -97,15 +97,4 @@ export class OrdersService {
             await queryRunner.release();
         }
     }
-
-    async deleteOrder(id: number, userId: number): Promise<IMessage> {
-        const order = await this.orderRepository.getOne({
-            where: { id, user: { id: userId } },
-        })
-
-        if (!order) throw new NotFoundException("Order not found")
-
-        await this.orderRepository.delete(order.id)
-        return { message: "Order deleted successfully" }
-    }
 }

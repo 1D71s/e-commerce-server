@@ -29,5 +29,9 @@ export const accesses: IAccess[] = [
     { title: 'View Admins', category: AccessCategory.ADMINS, endpoint: Endpoint.GET_ADMINS },
     { title: "Create admin", category: AccessCategory.ADMINS, endpoint: Endpoint.CREATE_ADMIN },
     { title: "Update admin", category: AccessCategory.ADMINS, endpoint: Endpoint.UPDATE_ADMIN },
-    { title: "Delete admin", category: AccessCategory.ADMINS, endpoint: Endpoint.DELETE_ADMIN}
+    { title: "Delete admin", category: AccessCategory.ADMINS, endpoint: Endpoint.DELETE_ADMIN},
+
+    { title: "Get orders", category: AccessCategory.ORDERS, endpoint: Endpoint.GET_ORDERS},
+    { title: "Handle order", category: AccessCategory.ORDERS, endpoint: Endpoint.HANDLE_ORDER},
+    { title: "Delete order", category: AccessCategory.ORDERS, endpoint: Endpoint.DELETE_ORDER},
 ];

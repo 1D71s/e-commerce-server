@@ -23,10 +23,4 @@ export class OrdersController {
     async createOrder(@Body() dto: CreateOrderDto, @User() user: IJwtPayload): Promise<IMessage> {
         return this.ordersService.createOrder(dto, user.id);
     }
-
-    @Delete('delete/:id')
-    @UseGuards(JwtAuthGuard)
-    async deleteOrder(@Param('id') id: number, @User() user: IJwtPayload): Promise<IMessage> {
-        return this.ordersService.deleteOrder(id, user.id);
-    }
 }
