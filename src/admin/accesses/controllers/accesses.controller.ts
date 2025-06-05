@@ -7,11 +7,11 @@ import { Endpoint } from '../enums/endpoint.enum';
 import { JwtAuthAdminGuard } from '../../admin-auth/guards/auth.admin.guard';
 
 @Controller()
+@UseGuards(JwtAuthAdminGuard, AccessGuard)
 export class AccessesController {
     constructor(private readonly accessesService: AccessesService) {}
 
     @Get()
-    @UseGuards(JwtAuthAdminGuard, AccessGuard)
     @EndpointAccess(Endpoint.GET_ACCESSES)
     async getAll(): Promise<IAccess[]> {
         return this.accessesService.getAll();

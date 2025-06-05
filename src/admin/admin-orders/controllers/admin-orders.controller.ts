@@ -11,25 +11,23 @@ import { OrderEntity } from '../../../web/orders/entities/order.entity';
 import { HandleOrderDto } from '../dtos/requests/handle-order.dto';
 
 @Controller()
+@UseGuards(JwtAuthAdminGuard, AccessGuard)
 export class AdminOrdersController {
     constructor(private readonly adminOrdersService: AdminOrdersService) {}
 
     @Get()
-    @UseGuards(JwtAuthAdminGuard, AccessGuard)
     @EndpointAccess(Endpoint.HANDLE_ORDER)
     async getOrders(@Query() dto: GetOrdersFilterDto): Promise<IGetManyPagination<OrderEntity>> {
         return this.adminOrdersService.getOrdersWithFilters(dto);
     }
 
     @Patch('handle/:id')
-    @UseGuards(JwtAuthAdminGuard, AccessGuard)
     @EndpointAccess(Endpoint.HANDLE_ORDER)
     async handleOrders(@Param('id') id: number, @Body() dto: HandleOrderDto): Promise<IMessage> {
         return this.adminOrdersService.handleOrders(dto, id);
     }
 
     @Delete('delete/:id')
-    @UseGuards(JwtAuthAdminGuard, AccessGuard)
     @EndpointAccess(Endpoint.DELETE_ORDER)
     async deleteOrder(@Param('id') id: number): Promise<IMessage> {
         return this.adminOrdersService.deleteOrder(id);

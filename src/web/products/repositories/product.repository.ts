@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { ProductEntity } from '../entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
 import { IProduct } from '../interfaces/product.interface';
 import { IProductsRepository } from '../interfaces/product-repository.interface';
+import { GetProductsFiltersDto } from '../dtos/requests/get-products-filters.dto';
 
 @Injectable()
 export class ProductsRepository implements IProductsRepository {
@@ -16,20 +17,26 @@ export class ProductsRepository implements IProductsRepository {
         return await this.repository.findOne(options);
     }
 
-    async getAll(): Promise<IProduct[]> {
-        return this.repository.find();
-    }
+    async findManyByFilters(dto: GetProductsFiltersDto): Promise<[IProduct[], number]> {
+        const { search, priceMin, priceMax, take = 10, skip = 0 } = dto;
 
-    async getMany(options: FindManyOptions<ProductEntity>): Promise<IProduct[]> {
-        return await this.repository.find(options);
-    }
+        const queryBuilder = this.repository.createQueryBuilder('product');
 
-    async getManyBySubCategoryId(scId: number, limit: number, page: number): Promise<IProduct[]> {
-        return this.repository.find({
-            where: { subCategory: { id: scId } },
-            take: limit,
-            skip: (page - 1) * limit,
-        });
+        if (search) {
+            queryBuilder.andWhere('product.title ILIKE :search', { search: `%${search}%` });
+        }
+
+        if (priceMin !== undefined) {
+            queryBuilder.andWhere('product.price >= :priceMin', { priceMin: Number(priceMin) });
+        }
+
+        if (priceMax !== undefined) {
+            queryBuilder.andWhere('product.price <= :priceMax', { priceMax: Number(priceMax) });
+        }
+
+        queryBuilder.skip(skip).take(take);
+
+        return await queryBuilder.getManyAndCount();
     }
 
     async create(product: IProduct): Promise<IProduct> {

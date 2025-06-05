@@ -11,25 +11,23 @@ import { JwtAuthAdminGuard } from '../../admin-auth/guards/auth.admin.guard';
 import { IAdminJwtPayload } from '../../admin-auth/interfaces/admin-jwt-payload.interface';
 
 @Controller()
+@UseGuards(JwtAuthAdminGuard, AccessGuard)
 export class AdminProductsController {
     constructor(private readonly adminProductsService: AdminProductsService) {}
 
     @Delete(':id')
-    @UseGuards(JwtAuthAdminGuard, AccessGuard)
     @EndpointAccess(Endpoint.DELETE_PRODUCT)
     async deleteProduct(@Param('id') id: number): Promise<IMessage> {
         return await this.adminProductsService.deleteProduct(id); 
     }
 
     @Put(':id')
-    @UseGuards(JwtAuthAdminGuard, AccessGuard)
     @EndpointAccess(Endpoint.UPDATE_PRODUCT)
     async updateProduct(@Param('id') id: number, @Body() dto: UpdateProductDto): Promise<IMessage> {
         return await this.adminProductsService.updateProduct(id, dto);
     }
 
     @Post()
-    @UseGuards(JwtAuthAdminGuard, AccessGuard)
     @EndpointAccess(Endpoint.CREATE_PRODUCT)
     async createProduct(@Body() dto: CreateProductDto, @User() user: IAdminJwtPayload): Promise<IMessage> {
         return await this.adminProductsService.createProduct(dto, user.id);

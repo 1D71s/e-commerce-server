@@ -10,27 +10,25 @@ import { UpdateSubCategoryDto } from '../dtos/update-sub-category.dto';
 import { JwtAuthAdminGuard } from '../../admin-auth/guards/auth.admin.guard';
 
 @Controller()
+@UseGuards(JwtAuthAdminGuard, AccessGuard)
 export class AdminSubCategoriesController {
     constructor(
         private readonly adminSubCategoriesService: AdminSubCategoriesService,
     ) {}
 
     @Post('create')
-    @UseGuards(JwtAuthAdminGuard, AccessGuard)
     @EndpointAccess(Endpoint.CREATE_SUB_CATEGORY)
     async createSubCategory(@Body() dto: CreateSubCategoryDto): Promise<ISubCategory> {
         return this.adminSubCategoriesService.createSubCategory(dto);
     }
 
     @Post('update')
-    @UseGuards(JwtAuthAdminGuard, AccessGuard)
     @EndpointAccess(Endpoint.UPDATE_SUB_CATEGORY)
     async updateSubCategory(@Body() dto: UpdateSubCategoryDto): Promise<ISubCategory> {
         return this.adminSubCategoriesService.updateSubCategory(dto);
     }
 
     @Delete('delete/:id')
-    @UseGuards(JwtAuthAdminGuard, AccessGuard)
     @EndpointAccess(Endpoint.DELETE_SUB_CATEGORY)
     async removeSubCategory(@Param('id') id: number): Promise<IMessage> {
         return this.adminSubCategoriesService.removeSubCategory(id);

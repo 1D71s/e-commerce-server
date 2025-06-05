@@ -11,25 +11,23 @@ import { UpdateRoleDto } from '../dtos/requests/update-role.dto';
 import { JwtAuthAdminGuard } from '../../admin-auth/guards/auth.admin.guard';
 
 @Controller()
+@UseGuards(JwtAuthAdminGuard, AccessGuard)
 export class RolesController {
     constructor(private readonly rolesService: RolesService) {}
 
     @Get()
-    @UseGuards(JwtAuthAdminGuard, AccessGuard)
     @EndpointAccess(Endpoint.GET_ROLES)
     async getAllRoles(): Promise<IRole[]> {
         return this.rolesService.getAllRoles();
     }
 
     @Post('create')
-    @UseGuards(JwtAuthAdminGuard, AccessGuard)
     @EndpointAccess(Endpoint.CREATE_ROLE)
     async createRole(@Body() dto: CreateRoleDto): Promise<IMessage> {
         return this.rolesService.createRole(dto);
     }
 
     @Patch('update/:id')
-    @UseGuards(JwtAuthAdminGuard, AccessGuard)
     @EndpointAccess(Endpoint.UPDATE_ROLE)
     async updateRole(@Param('id') id: number, @Body() dto: UpdateRoleDto): Promise<IMessage> {
         return this.rolesService.updateRole(dto, id)
