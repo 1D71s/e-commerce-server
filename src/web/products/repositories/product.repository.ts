@@ -5,6 +5,7 @@ import { FindOneOptions, Repository } from 'typeorm';
 import { IProduct } from '../interfaces/product.interface';
 import { IProductsRepository } from '../interfaces/product-repository.interface';
 import { GetProductsFiltersDto } from '../dtos/requests/get-products-filters.dto';
+import { ProductsQueryBuilder } from '../services/products-query.builder';
 
 @Injectable()
 export class ProductsRepository implements IProductsRepository {
@@ -17,26 +18,16 @@ export class ProductsRepository implements IProductsRepository {
         return await this.repository.findOne(options);
     }
 
-    async findManyByFilters(dto: GetProductsFiltersDto): Promise<[IProduct[], number]> {
-        const { search, priceMin, priceMax, take = 10, skip = 0 } = dto;
-
+    async findManyByFilters(dto: GetProductsFiltersDto): Promise<[ProductEntity[], number]> {
         const queryBuilder = this.repository.createQueryBuilder('product');
 
-        if (search) {
-            queryBuilder.andWhere('product.title ILIKE :search', { search: `%${search}%` });
-        }
+        const builder = new ProductsQueryBuilder(queryBuilder)
+          .withSubCategory(dto.subCategoryId)
+          .withSearch(dto.search)
+          .withPriceRange(dto.priceMin, dto.priceMax)
+          .withPagination(dto.skip, dto.take);
 
-        if (priceMin !== undefined) {
-            queryBuilder.andWhere('product.price >= :priceMin', { priceMin: Number(priceMin) });
-        }
-
-        if (priceMax !== undefined) {
-            queryBuilder.andWhere('product.price <= :priceMax', { priceMax: Number(priceMax) });
-        }
-
-        queryBuilder.skip(skip).take(take);
-
-        return await queryBuilder.getManyAndCount();
+        return await builder.build().getManyAndCount();
     }
 
     async create(product: IProduct): Promise<IProduct> {

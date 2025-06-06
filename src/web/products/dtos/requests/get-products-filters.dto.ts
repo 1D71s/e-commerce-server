@@ -14,6 +14,11 @@ export class GetProductsFiltersDto {
     @IsOptional()
     @Type(() => Number)
     @IsNumber()
+    subCategoryId?: number;
+
+    @IsOptional()
+    @Type(() => Number)
+    @IsNumber()
     skip?: number;
 
     @IsOptional()
