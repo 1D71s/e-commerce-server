@@ -57,9 +57,7 @@ export class OrdersService {
                 order: savedOrder,
             });
 
-            const savedAddress = await queryRunner.manager.save(address);
-
-            savedOrder.address = savedAddress;
+            savedOrder.address = await queryRunner.manager.save(address);;
             await queryRunner.manager.save(savedOrder);
 
             for (const item of dto.quantities) {

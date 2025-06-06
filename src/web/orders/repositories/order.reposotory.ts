@@ -19,7 +19,7 @@ export class OrderRepository {
     async findManyByFilters(dto: GetOrdersFilterDto): Promise<[OrderEntity[], number]> {
         const { userId, status, createdAt, take = 10, skip = 0 } = dto;
 
-        const queryBuilder = this.repository.createQueryBuilder('product');
+        const queryBuilder = this.repository.createQueryBuilder('orders');
 
         const builder = new OrderFilterBuilder(queryBuilder)
           .filterByUser(userId)
@@ -30,18 +30,9 @@ export class OrderRepository {
         return await builder.build().getManyAndCount();
     }
 
-    async create(orderData: Partial<OrderEntity>): Promise<OrderEntity> {
-        const order = this.repository.create(orderData);
-        return this.save(order);
-    }
-
     async update(id: number, data: Partial<OrderEntity>): Promise<OrderEntity> {
         await this.repository.update(id, data);
         return this.repository.findOneOrFail({ where: { id } });
-    }
-
-    async save(data: OrderEntity): Promise<OrderEntity> {
-        return this.repository.save(data);
     }
 
     async delete(id: number): Promise<boolean> {

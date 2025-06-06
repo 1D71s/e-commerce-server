@@ -8,14 +8,14 @@ export class OrderFilterBuilder {
 
     filterByUser(userId?: number): this {
         if (userId !== undefined) {
-            this.queryBuilder.andWhere('order.user.id == :userId', { userId });
+            this.queryBuilder.andWhere('orders.userId = :userId', { userId });
         }
         return this;
     }
 
     filterByStatus(status?: OrderStatus): this {
         if (status !== undefined) {
-            this.queryBuilder.andWhere('order.status == :status', { status });
+            this.queryBuilder.andWhere('orders.status = :status', { status });
         }
         return this;
     }
@@ -25,10 +25,10 @@ export class OrderFilterBuilder {
         const endDate = createdAt ? endOfDay(createdAt) : undefined;
 
         if (startDate !== undefined) {
-            this.queryBuilder.andWhere('order.createdAt >= :startDate', { startDate });
+            this.queryBuilder.andWhere('orders.createdAt >= :startDate', { startDate });
         }
         if (endDate !== undefined) {
-            this.queryBuilder.andWhere('order.createdAt <= :endDate', { endDate });
+            this.queryBuilder.andWhere('orders.createdAt <= :endDate', { endDate });
         }
         return this;
     }

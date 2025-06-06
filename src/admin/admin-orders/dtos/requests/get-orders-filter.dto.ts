@@ -5,7 +5,7 @@ import { OrderStatus } from '../../../../web/orders/enums/order-status.enum';
 export class GetOrdersFilterDto {
     @IsOptional()
     @IsNumber()
-    @Min(1)
+    @Type(() => Number)
     userId?: number;
 
     @IsOptional()
