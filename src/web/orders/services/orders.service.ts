@@ -19,14 +19,7 @@ export class OrdersService {
     ) {}
 
     async getAllUserOrders(userId: number): Promise<IGetManyPagination<OrderEntity>> {
-        const [orders, total] = await this.orderRepository.findManyWithOptions({
-            where: { user: { id: userId } },
-            relations: ['address', 'quantities'],
-            skip: 0,
-            take: 10,
-            order: { createdAt: 'DESC' },
-        });
-
+        const [orders, total] = await this.orderRepository.findManyByFilters({ userId });
         return { total, data: orders }
     }
 

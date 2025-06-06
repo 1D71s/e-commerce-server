@@ -1,34 +1,44 @@
 import { OrderStatus } from '../../../web/orders/enums/order-status.enum';
+import { SelectQueryBuilder } from 'typeorm';
+import { OrderEntity } from '../../../web/orders/entities/order.entity';
+import { endOfDay, startOfDay } from 'date-fns';
 
 export class OrderFilterBuilder {
-    private where: Record<string, any> = {};
+    constructor(private readonly queryBuilder: SelectQueryBuilder<OrderEntity>) {}
 
     filterByUser(userId?: number): this {
         if (userId !== undefined) {
-            this.where['user.id'] = userId;
+            this.queryBuilder.andWhere('order.user.id == :userId', { userId });
         }
         return this;
     }
 
     filterByStatus(status?: OrderStatus): this {
         if (status !== undefined) {
-            this.where['status'] = status;
+            this.queryBuilder.andWhere('order.status == :status', { status });
         }
         return this;
     }
 
-    filterByCreatedAtRange(startDate?: Date, endDate?: Date): this {
-        if (startDate && endDate) {
-            this.where['createdAt'] = { $gte: startDate, $lt: endDate };
-        } else if (startDate) {
-            this.where['createdAt'] = { $gte: startDate };
-        } else if (endDate) {
-            this.where['createdAt'] = { $lt: endDate };
+    filterByCreatedAtRange(createdAt?: Date): this {
+        const startDate = createdAt ? startOfDay(createdAt) : undefined;
+        const endDate = createdAt ? endOfDay(createdAt) : undefined;
+
+        if (startDate !== undefined) {
+            this.queryBuilder.andWhere('order.createdAt >= :startDate', { startDate });
+        }
+        if (endDate !== undefined) {
+            this.queryBuilder.andWhere('order.createdAt <= :endDate', { endDate });
         }
         return this;
     }
 
-    build(): Record<string, any> {
-        return this.where;
+    withPagination(skip: number = 0, take: number = 10): this {
+        this.queryBuilder.skip(skip).take(take);
+        return this;
+    }
+
+    build(): SelectQueryBuilder<OrderEntity> {
+        return this.queryBuilder;
     }
 }
