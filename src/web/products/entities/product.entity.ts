@@ -4,6 +4,7 @@ import { ProductImagesEntity } from "./product-images.entity";
 import { CartItemEntity } from "src/web/baskets/entities/cart-item.entity";
 import { SubcategoryEntity } from "src/web/sub-categories/entities/sub-category.entity";
 import { AdminUserEntity } from '../../../admin/admin-users/entities/admin.entity';
+import { ProductPropertyEntity } from './product-property.entity';
 
 @Entity('products')
 export class ProductEntity implements IProduct {
@@ -35,6 +36,9 @@ export class ProductEntity implements IProduct {
     
     @OneToMany(() => CartItemEntity, (cartItem) => cartItem.product)
     cartItems: CartItemEntity[];
+
+    @OneToMany(() => ProductPropertyEntity, (property) => property.product)
+    properties: ProductPropertyEntity[];
 
     @CreateDateColumn()
     createdAt: Date;
