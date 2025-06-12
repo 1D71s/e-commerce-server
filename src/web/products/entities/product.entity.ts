@@ -1,16 +1,22 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm";
+import {
+    Entity,
+    Column,
+    ManyToOne,
+    JoinColumn,
+    OneToMany,
+    JoinTable, ManyToMany,
+} from 'typeorm';
 import { IProduct } from "../interfaces/product.interface";
 import { ProductImagesEntity } from "./product-images.entity";
 import { CartItemEntity } from "src/web/baskets/entities/cart-item.entity";
 import { SubcategoryEntity } from "src/web/sub-categories/entities/sub-category.entity";
 import { AdminUserEntity } from '../../../admin/admin-users/entities/admin.entity';
 import { ProductPropertyEntity } from './product-property.entity';
+import { ProductSizeEntity } from './product-size.entity';
+import { BasicEntity } from '../../../database/entities/basic.entity';
 
 @Entity('products')
-export class ProductEntity implements IProduct {
-    @PrimaryGeneratedColumn('increment')
-    id: number;
-
+export class ProductEntity extends BasicEntity implements IProduct {
     @Column({ type: 'int', nullable: false })
     price: number;
 
@@ -40,9 +46,11 @@ export class ProductEntity implements IProduct {
     @OneToMany(() => ProductPropertyEntity, (property) => property.product)
     properties: ProductPropertyEntity[];
 
-    @CreateDateColumn()
-    createdAt: Date;
-
-    @UpdateDateColumn()
-    updatedAt: Date;
+    @ManyToMany(() => ProductSizeEntity, (size) => size.products)
+    @JoinTable({
+        name: "products_sizes",
+        joinColumn: { name: "productId", referencedColumnName: "id" },
+        inverseJoinColumn: { name: "sizeId", referencedColumnName: "id" }
+    })
+    sizes: ProductSizeEntity[];
 }

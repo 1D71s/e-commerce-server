@@ -6,4 +6,5 @@ export interface IOrderQuantity {
     order: IOrder;
     product: IProduct;
     quantity: number;
+    sizeProduct?: string;
 }

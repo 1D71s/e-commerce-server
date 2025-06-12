@@ -1,6 +1,5 @@
 import {
     Entity,
-    PrimaryGeneratedColumn,
     Column,
     ManyToOne,
     JoinColumn,
@@ -8,12 +7,10 @@ import {
 import { OrderEntity } from './order.entity';
 import { ProductEntity } from '../../products/entities/product.entity';
 import { IOrderQuantity } from '../interfaces/order-quantity.interface';
+import { BasicEntity } from '../../../database/entities/basic.entity';
 
 @Entity('order_quantities')
-export class OrderQuantityEntity implements IOrderQuantity{
-    @PrimaryGeneratedColumn()
-    id: number;
-
+export class OrderQuantityEntity extends BasicEntity implements IOrderQuantity{
     @ManyToOne(() => OrderEntity, order => order.quantities, { onDelete: 'CASCADE' })
     order: OrderEntity;
 
@@ -23,4 +20,7 @@ export class OrderQuantityEntity implements IOrderQuantity{
 
     @Column()
     quantity: number;
+
+    @Column()
+    sizeProduct?: string;
 }

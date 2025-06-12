@@ -1,16 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, CreateDateColumn, Column, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, OneToMany } from 'typeorm';
 import { Provider } from "../interfaces/enums/provider.enum";
 import { IUser } from "../interfaces/user.interface";
 import { ResetToken } from "./reset-token.entity";
 import { SessionEntity } from 'src/web/sessions/entities/session.entity';
 import { CartItemEntity } from 'src/web/baskets/entities/cart-item.entity';
 import { OrderEntity } from '../../orders/entities/order.entity';
+import { BasicEntity } from '../../../database/entities/basic.entity';
 
 @Entity('users')
-export class UserEntity implements IUser {
-    @PrimaryGeneratedColumn('increment')
-    id: number;
-
+export class UserEntity  extends BasicEntity implements IUser {
     @Column({ nullable: false })
     email: string;
 
@@ -34,7 +32,4 @@ export class UserEntity implements IUser {
 
     @OneToMany(() => OrderEntity, order => order.user)
     orders: OrderEntity[];
-
-    @CreateDateColumn()
-    createdAt: Date;
 }

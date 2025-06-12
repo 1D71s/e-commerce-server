@@ -1,17 +1,14 @@
 import {
     Entity,
-    PrimaryGeneratedColumn,
     Column, OneToOne, JoinColumn,
 } from 'typeorm';
 import { DeliveryProvider } from '../enums/delivery-provider.enum';
 import { IOrderAddress } from '../interfaces/order-address.interface';
 import { OrderEntity } from './order.entity';
+import { BasicEntity } from '../../../database/entities/basic.entity';
 
 @Entity('order_addresses')
-export class OrderAddressEntity implements IOrderAddress{
-    @PrimaryGeneratedColumn()
-    id: number;
-
+export class OrderAddressEntity extends BasicEntity implements IOrderAddress{
     @Column({ type: 'enum', enum: DeliveryProvider })
     deliveryProvider: DeliveryProvider;
 

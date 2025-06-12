@@ -73,6 +73,7 @@ export class OrdersService {
                     quantity: item.quantity,
                     product,
                     order: savedOrder,
+                    sizeProduct: item.sizeProduct,
                 });
 
                 await queryRunner.manager.save(orderQuantity);

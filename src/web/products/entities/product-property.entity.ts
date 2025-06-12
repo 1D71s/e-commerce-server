@@ -1,11 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, Column, ManyToOne, JoinColumn } from "typeorm";
 import { ProductEntity } from "./product.entity";
+import { BasicEntity } from '../../../database/entities/basic.entity';
+import { IProductProperties } from '../interfaces/product-properties.interface';
 
 @Entity('product_properties')
-export class ProductPropertyEntity {
-    @PrimaryGeneratedColumn('increment')
-    id: number;
-
+export class ProductPropertyEntity extends BasicEntity implements IProductProperties{
     @Column({ type: 'varchar', length: 100, nullable: true })
     color: string;
 

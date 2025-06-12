@@ -1,13 +1,10 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, JoinColumn, ManyToOne } from 'typeorm';
 import { IResetToken } from '../interfaces/reset-token.interface';
 import { UserEntity } from './user.entity';
+import { BasicEntity } from '../../../database/entities/basic.entity';
 
 @Entity('reset_token')  
-export class ResetToken implements IResetToken {
-  
-    @PrimaryGeneratedColumn('increment')
-    id: number;
-
+export class ResetToken extends BasicEntity implements IResetToken {
     @Column({ unique: true })
     token: string;
 
@@ -17,7 +14,4 @@ export class ResetToken implements IResetToken {
     @ManyToOne(() => UserEntity, (user) => user.resetTokens, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'user' })
     user: UserEntity;
-
-    @CreateDateColumn()
-    createdAt: Date;
 }
