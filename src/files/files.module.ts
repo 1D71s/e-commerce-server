@@ -7,5 +7,6 @@ import { UsersModule } from 'src/web/users/users.module';
     imports: [UsersModule],
     controllers: [FilesController],
     providers: [FilesService],
+    exports: [FilesService],
 })
 export class FilesModule {}

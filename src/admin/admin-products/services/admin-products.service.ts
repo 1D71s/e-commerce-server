@@ -8,7 +8,9 @@ import { IProductImages } from 'src/web/products/interfaces/product-images.inter
 import { IProduct } from 'src/web/products/interfaces/product.interface';
 import { ProductImagesRepository } from 'src/web/products/repositories/product-images.repository';
 import { ProductsRepository } from 'src/web/products/repositories/product.repository';
-import { UserRepository } from '../../../web/users/repositories/user.repository';
+import { ProductSizeRepository } from '../../../web/products/repositories/product-size.repository';
+import { FilesService } from '../../../files/services/files.service';
+import { AdminUserRepository } from '../../admin-users/repositories/admin-user.repository';
 
 @Injectable()
 export class AdminProductsService {
@@ -16,7 +18,9 @@ export class AdminProductsService {
         private readonly subCategoryRepository: SubCategoryRepository,
         private readonly productRepository: ProductsRepository,
         private readonly productImagesRepository: ProductImagesRepository,
-        private readonly userRepository: UserRepository,
+        private readonly adminUserRepository: AdminUserRepository,
+        private readonly productSizeRepository: ProductSizeRepository,
+        private readonly filesService: FilesService,
     ) {}
 
     async deleteProduct(id: number): Promise<IMessage> {
@@ -49,7 +53,7 @@ export class AdminProductsService {
         }
     }
 
-    async createProduct(dto: CreateProductDto, userId: number): Promise<IMessage> {
+    async createProduct(dto: CreateProductDto, adminId: number): Promise<IMessage> {
         const { 
             price, 
             title, 
@@ -59,7 +63,9 @@ export class AdminProductsService {
             images, 
         } = dto;
 
-        const creator = await this.userRepository.findById(userId);
+        const creator = await this.adminUserRepository.getOne({
+            where: { id: adminId },
+        })
 
         if (!creator) {
             throw new NotFoundException('User not found');
@@ -82,7 +88,7 @@ export class AdminProductsService {
         ProductBuild.description = description;
         ProductBuild.subCategory = subCategory;
         ProductBuild.images = productImages;
-        // ProductBuild.user = creator;
+        ProductBuild.admin = creator;
 
         await this.productRepository.save(ProductBuild);
 

@@ -22,7 +22,7 @@ export class AuthService {
         private readonly jwtService: JwtService,
         private readonly userRepository: UserRepository,
         private readonly sessionRepository: SessionRepository,
-    ) { }
+    ) {}
 
     async register(dto: RegisterDto): Promise<IMessage> {
         const user = await this.userRepository.findByEmail(dto.email);

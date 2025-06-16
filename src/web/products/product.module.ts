@@ -8,6 +8,7 @@ import { ProductImagesEntity } from './entities/product-images.entity';
 import { ProductImagesRepository } from './repositories/product-images.repository';
 import { ProductSizeEntity } from './entities/product-size.entity';
 import { ProductPropertyEntity } from './entities/product-property.entity';
+import { ProductSizeRepository } from './repositories/product-size.repository';
 
 @Module({
     imports: [
@@ -24,11 +25,13 @@ import { ProductPropertyEntity } from './entities/product-property.entity';
     providers: [
         ProductsService, 
         ProductsRepository,
-        ProductImagesRepository
+        ProductImagesRepository,
+        ProductSizeRepository
     ],
     exports: [
         ProductsRepository,
-        ProductImagesRepository
+        ProductImagesRepository,
+        ProductSizeRepository,
     ]
 })
 export class ProductsModule {}

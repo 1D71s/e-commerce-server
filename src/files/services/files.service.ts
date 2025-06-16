@@ -36,4 +36,14 @@ export class FilesService {
 
         res.sendFile(filePath);
     }
+
+    async deleteFile(fileName: string): Promise<void> {
+        const filePath = path.join(this.uploadPath, fileName);
+
+        if (!fs.existsSync(filePath)) {
+            throw new NotFoundException('File not found');
+        }
+
+        fs.unlinkSync(filePath);
+    }
 }
