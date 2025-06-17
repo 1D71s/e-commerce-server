@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { In } from 'typeorm';
+import { DataSource, In } from 'typeorm';
 import { IMessage } from 'src/common/dto/responses/message.response';
 import { UpdateProductDto } from '../dtos/update-product.dto';
 import { CreateProductDto } from '../dtos/create-product.dto';
@@ -31,6 +31,12 @@ export class AdminProductsService {
         if (!product) {
             throw new NotFoundException('Product not found');
         }
+
+        await Promise.allSettled(
+          product.images.map(async (image) => {
+              await this.filesService.deleteFile(image.imageName)
+          })
+        )
 
         await this.productRepository.delete(product);
 

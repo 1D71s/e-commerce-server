@@ -6,7 +6,7 @@ import { BasicEntity } from '../../../database/entities/basic.entity';
 @Entity("products_size")
 export class ProductSizeEntity extends BasicEntity implements IProductSize {
     @Column()
-    value: number;
+    value: string;
 
     @ManyToMany(() => ProductEntity, (product) => product.sizes)
     products: ProductEntity[];

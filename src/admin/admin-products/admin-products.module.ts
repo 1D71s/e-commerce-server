@@ -5,15 +5,21 @@ import { ProductsModule } from 'src/web/products/product.module';
 import { SubCategoriesModule } from 'src/web/sub-categories/sub-categories.module';
 import { UsersModule } from 'src/web/users/users.module';
 import { FilesModule } from '../../files/files.module';
+import { AdminUsersModule } from '../admin-users/admin-users.module';
+import { AdminProductSizeService } from './services/admin-product-size.service';
 
 @Module({
     imports: [
         ProductsModule,
         SubCategoriesModule,
         UsersModule,
-        FilesModule
+        FilesModule,
+        AdminUsersModule
     ],
     controllers: [AdminProductsController],
-    providers: [AdminProductsService],
+    providers: [
+        AdminProductsService,
+        AdminProductSizeService
+    ],
 })
 export class AdminProductsModule {}

@@ -4,6 +4,7 @@ import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { IProductImages } from '../interfaces/product-images.interface';
 import { ProductSizeEntity } from '../entities/product-size.entity';
 import { IProductSize } from '../interfaces/product-size.interface';
+import { CreateProductSizeDto } from '../../../admin/admin-products/dtos/create-product-size.dto';
 
 @Injectable()
 export class ProductSizeRepository {
@@ -12,7 +13,7 @@ export class ProductSizeRepository {
       private readonly repository: Repository<ProductSizeEntity>
     ) {}
 
-    async getOne(options: FindOneOptions<ProductSizeEntity>): Promise<IProductSize> {
+    async getOne(options: FindOneOptions<ProductSizeEntity>): Promise<ProductSizeEntity> {
         return await this.repository.findOne(options);
     }
 
@@ -20,11 +21,11 @@ export class ProductSizeRepository {
         return await this.repository.find(options);
     }
 
-    async create(size: IProductImages): Promise<IProductSize> {
+    async create(size: CreateProductSizeDto): Promise<IProductSize> {
         return this.repository.create(size);
     }
 
-    async save(size: IProductImages): Promise<IProductImages> {
+    async save(size: IProductSize): Promise<IProductSize> {
         return this.repository.save(size);
     }
 

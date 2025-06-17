@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { CreateProductDto } from '../dtos/create-product.dto';
 import { AdminProductsService } from '../services/admin-products.service';
 import { IMessage } from 'src/common/dto/responses/message.response';
@@ -9,11 +9,17 @@ import { Endpoint } from '../../accesses/enums/endpoint.enum';
 import { User } from '../../../common/decorators/user.decorator';
 import { JwtAuthAdminGuard } from '../../admin-auth/guards/auth.admin.guard';
 import { IAdminJwtPayload } from '../../admin-auth/interfaces/admin-jwt-payload.interface';
+import { AdminProductSizeService } from '../services/admin-product-size.service';
+import { IProductSize } from '../../../web/products/interfaces/product-size.interface';
+import { CreateProductSizeDto } from '../dtos/create-product-size.dto';
 
 @Controller()
 @UseGuards(JwtAuthAdminGuard, AccessGuard)
 export class AdminProductsController {
-    constructor(private readonly adminProductsService: AdminProductsService) {}
+    constructor(
+        private readonly adminProductsService: AdminProductsService,
+        private readonly adminProductSizeService: AdminProductSizeService
+    ) {}
 
     @Delete(':id')
     @EndpointAccess(Endpoint.DELETE_PRODUCT)
@@ -31,5 +37,23 @@ export class AdminProductsController {
     @EndpointAccess(Endpoint.CREATE_PRODUCT)
     async createProduct(@Body() dto: CreateProductDto, @User() user: IAdminJwtPayload): Promise<IMessage> {
         return await this.adminProductsService.createProduct(dto, user.id);
+    }
+
+    @Get('sizes')
+    @EndpointAccess(Endpoint.GET_PRODUCT_SIZES)
+    async getAllSizes(): Promise<IProductSize[]> {
+        return this.adminProductSizeService.getProductSizes();
+    }
+
+    @Post('size/create')
+    @EndpointAccess(Endpoint.CREATE_PRODUCT_SIZE)
+    async createProductSize(@Body() dto: CreateProductSizeDto): Promise<IProductSize> {
+        return this.adminProductSizeService.createSize(dto)
+    }
+
+    @Delete('size/:id')
+    @EndpointAccess(Endpoint.DELETE_PRODUCT_SIZE)
+    async deleteProductSize(@Param('id') id: number): Promise<IMessage> {
+        return await this.adminProductSizeService.deleteSize(id);
     }
 }

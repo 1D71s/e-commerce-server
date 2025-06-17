@@ -34,4 +34,8 @@ export const accesses: IAccess[] = [
     { title: "Get orders", category: AccessCategory.ORDERS, endpoint: Endpoint.GET_ORDERS},
     { title: "Handle order", category: AccessCategory.ORDERS, endpoint: Endpoint.HANDLE_ORDER},
     { title: "Delete order", category: AccessCategory.ORDERS, endpoint: Endpoint.DELETE_ORDER},
+
+    { title: "Get product sizes", category: AccessCategory.PRODUCTS, endpoint: Endpoint.GET_PRODUCT_SIZES},
+    { title: "Create product size", category: AccessCategory.PRODUCTS, endpoint: Endpoint.CREATE_PRODUCT_SIZE},
+    { title: "Delete product size", category: AccessCategory.PRODUCTS, endpoint: Endpoint.DELETE_PRODUCT_SIZE},
 ];

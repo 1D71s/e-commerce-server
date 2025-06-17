@@ -1,4 +1,4 @@
 export interface IProductSize {
     id: number;
-    value: number;
+    value: string;
 }
