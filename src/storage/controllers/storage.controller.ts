@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Post, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
-import { FilesService } from '../services/files.service';
+import { StorageService } from '../services/storage.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import { FilenameResponseDto } from '../dtos/response/filename-response.dto';
@@ -8,9 +8,9 @@ import { EndpointAccess } from '../../admin/accesses/guards/endpoint-access.guar
 import { Endpoint } from '../../admin/accesses/enums/endpoint.enum';
 import { JwtAuthAdminGuard } from '../../admin/admin-auth/guards/auth.admin.guard';
 
-@Controller('files')
-export class FilesController {
-    constructor(private readonly filesService: FilesService) {}
+@Controller('storage')
+export class StorageController {
+    constructor(private readonly filesService: StorageService) {}
 
     @Post('upload')
     @UseGuards(JwtAuthAdminGuard, AccessGuard)

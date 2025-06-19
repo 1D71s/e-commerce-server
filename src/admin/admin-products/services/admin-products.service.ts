@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { DataSource, In } from 'typeorm';
+import { In } from 'typeorm';
 import { IMessage } from 'src/common/dto/responses/message.response';
 import { UpdateProductDto } from '../dtos/update-product.dto';
 import { CreateProductDto } from '../dtos/create-product.dto';
@@ -9,8 +9,9 @@ import { IProduct } from 'src/web/products/interfaces/product.interface';
 import { ProductImagesRepository } from 'src/web/products/repositories/product-images.repository';
 import { ProductsRepository } from 'src/web/products/repositories/product.repository';
 import { ProductSizeRepository } from '../../../web/products/repositories/product-size.repository';
-import { FilesService } from '../../../files/services/files.service';
+import { StorageService } from '../../../storage/services/storage.service';
 import { AdminUserRepository } from '../../admin-users/repositories/admin-user.repository';
+import { IProductSize } from 'src/web/products/interfaces/product-size.interface';
 
 @Injectable()
 export class AdminProductsService {
@@ -20,7 +21,7 @@ export class AdminProductsService {
         private readonly productImagesRepository: ProductImagesRepository,
         private readonly adminUserRepository: AdminUserRepository,
         private readonly productSizeRepository: ProductSizeRepository,
-        private readonly filesService: FilesService,
+        private readonly storageService: StorageService,
     ) {}
 
     async deleteProduct(id: number): Promise<IMessage> {
@@ -34,15 +35,13 @@ export class AdminProductsService {
 
         await Promise.allSettled(
           product.images.map(async (image) => {
-              await this.filesService.deleteFile(image.imageName)
+              await this.storageService.deleteFile(image.imageName)
           })
         )
 
         await this.productRepository.delete(product);
 
-        return {
-            message: 'Product deleted successfully',
-        };
+        return { message: 'Product deleted successfully' };
     }
 
     async updateProduct(id: number, updateProductDto: UpdateProductDto): Promise<IMessage> {
@@ -67,6 +66,7 @@ export class AdminProductsService {
             description, 
             subcategoryId,
             images, 
+            sizes
         } = dto;
 
         const creator = await this.adminUserRepository.getOne({
@@ -85,7 +85,8 @@ export class AdminProductsService {
             throw new NotFoundException('Subcategory not found');
         }
 
-        const productImages = await this.handleImages(images)
+        const productImages = await this.handleImages(images);
+        const productSizes = await this.handleSizes(sizes)
 
         const ProductBuild = new IProduct();
         ProductBuild.price = price;
@@ -95,21 +96,26 @@ export class AdminProductsService {
         ProductBuild.subCategory = subCategory;
         ProductBuild.images = productImages;
         ProductBuild.admin = creator;
+        ProductBuild.sizes = productSizes
 
         await this.productRepository.save(ProductBuild);
 
-        return {
-            message: 'Product created successfully',
-        };
+        return { message: 'Product created successfully' };
     }
 
     private async handleImages(images: string[]): Promise<IProductImages[]> {
-        if (!images.length) {
-            return [];
-        }
+        if (!images.length) return [];
         
         return await this.productImagesRepository.getMany({
             where: { imageName: In(images) },
+        });
+    }
+
+    private async handleSizes(sizes: number[]): Promise<IProductSize[]> {
+        if (!sizes.length) return [];
+
+        return await this.productSizeRepository.getMany({
+            where: { id: In(sizes) },
         });
     }
 }

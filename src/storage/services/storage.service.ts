@@ -5,7 +5,7 @@ import * as path from 'path';
 import { FilenameResponseDto } from '../dtos/response/filename-response.dto';
 
 @Injectable()
-export class FilesService {
+export class StorageService {
     public readonly uploadPath = path.resolve(process.cwd(), 'uploads');
 
     constructor() {

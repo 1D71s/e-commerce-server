@@ -38,4 +38,8 @@ export class CreateProductDto implements IProductDto {
     @IsArray()
     @IsUrl({}, { each: true, message: "Each image URL must be valid." })
     images?: string[];
+
+    @IsOptional()
+    @IsArray()
+    sizes?: number[]
 }

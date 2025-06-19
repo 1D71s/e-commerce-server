@@ -3,7 +3,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { LoggerMiddleware } from './common/middlewares/logger.middleware';
 import { RedisModule } from './redis/redis.module';
-import { FilesModule } from './files/files.module';
+import { StorageModule } from './storage/storage.module';
 import { WebModule } from './web/web.module';
 import { DatabaseModule } from './database/database.module';
 import { MailerModule } from './mailer/mailer.module';
@@ -19,7 +19,7 @@ import { UserEntity } from './web/users/entities/user.entity';
             limit: 3,
         }]),
         RedisModule,
-        FilesModule,
+        StorageModule,
         WebModule,
         DatabaseModule,
         MailerModule,
