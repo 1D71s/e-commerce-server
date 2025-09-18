@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AdminProductsService } from '../services/admin-products.service';
-import { SubCategoryRepository } from '../../../categories/reposiroties/sub-category.repository';
-import { ProductImagesRepository } from '../../../products/repositories/product-images.repository';
 import { NotFoundException } from '@nestjs/common';
-import { ProductsRepository } from '../../../products/repositories/product.repository';
+import { ProductsRepository } from 'src/web/products/repositories/product.repository';
+import { SubCategoryRepository } from 'src/web/sub-categories/repositories/sub-category.repository';
+import { ProductImagesRepository } from 'src/web/products/repositories/product-images.repository';
 
 describe('AdminProductsService', () => {
     let service: AdminProductsService;

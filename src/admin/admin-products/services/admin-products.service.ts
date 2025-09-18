@@ -96,10 +96,9 @@ export class AdminProductsService {
         ProductBuild.subCategory = subCategory;
         ProductBuild.images = productImages;
         ProductBuild.admin = creator;
-        ProductBuild.sizes = productSizes
+        ProductBuild.properties.sizes = productSizes
 
         await this.productRepository.save(ProductBuild);
-
         return { message: 'Product created successfully' };
     }
 
