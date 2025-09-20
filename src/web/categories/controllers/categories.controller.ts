@@ -1,15 +1,15 @@
 import { Controller, Get } from '@nestjs/common';
-import { CategoryRepository } from '../repositories/category.repository';
 import { ICategory } from '../interfaces/category.interface';
+import { CategoriesService } from '../services/categories.service';
 
 @Controller()
 export class CategoriesController {
     constructor(
-        private readonly categoryRepository: CategoryRepository
+        private readonly categoriesService: CategoriesService
     ) {}
 
     @Get()
     async getAll(): Promise<ICategory[]> {
-        return this.categoryRepository.getAll();
+        return this.categoriesService.getAll();
     }
 }

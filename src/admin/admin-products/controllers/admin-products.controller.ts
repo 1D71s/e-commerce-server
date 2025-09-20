@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { CreateProductDto } from '../dtos/create-product.dto';
 import { AdminProductsService } from '../services/admin-products.service';
 import { IMessage } from 'src/common/dto/responses/message.response';
@@ -12,6 +12,9 @@ import { IAdminJwtPayload } from '../../admin-auth/interfaces/admin-jwt-payload.
 import { AdminProductSizeService } from '../services/admin-product-size.service';
 import { IProductSize } from '../../../web/products/interfaces/product-size.interface';
 import { CreateProductSizeDto } from '../dtos/create-product-size.dto';
+import { IGetManyPagination } from 'src/common/dto/responses/get-many-pagination.response';
+import { GetProductsFiltersDto } from 'src/web/products/dtos/requests/get-products-filters.dto';
+import { IProduct } from 'src/web/products/interfaces/product.interface';
 
 @Controller()
 @UseGuards(JwtAuthAdminGuard, AccessGuard)
@@ -20,6 +23,11 @@ export class AdminProductsController {
         private readonly adminProductsService: AdminProductsService,
         private readonly adminProductSizeService: AdminProductSizeService
     ) {}
+
+    @Get()
+    async getManyByFilters(@Query() dto: GetProductsFiltersDto): Promise<IGetManyPagination<IProduct>>  {
+        return this.adminProductsService.getManyByFilters(dto);
+    }
 
     @Delete(':id')
     @EndpointAccess(Endpoint.DELETE_PRODUCT)

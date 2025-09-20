@@ -29,13 +29,13 @@ export class BasketsService {
         if (!cart) {
             const user = await this.usersRepository.findById(userId);
 
-            if (!user) throw new NotFoundException("User not found")
+            if (!user) throw new NotFoundException("User not found");
 
             const product = await this.productsRepository.getOne({
                 where: { id: productId }
             })
 
-            if (!product) throw new NotFoundException("Product not found")
+            if (!product) throw new NotFoundException("Product not found");
 
             const newCart = this.basketRepository.create({
                 quantity,
@@ -56,9 +56,9 @@ export class BasketsService {
             where: { id, user: { id: userId } },
         })
 
-        if (!cart) throw new NotFoundException("Cart not found")
+        if (!cart) throw new NotFoundException("Cart not found");
 
-        await this.basketRepository.delete(cart.id)
-        return { message: "Basket deleted successfully" }
+        await this.basketRepository.delete(cart.id);
+        return { message: "Basket deleted successfully" };
     }
 }

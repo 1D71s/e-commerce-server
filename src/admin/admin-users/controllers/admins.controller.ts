@@ -9,9 +9,9 @@ import { IMessage } from '../../../common/dto/responses/message.response';
 import { CreateAdminUserDto } from '../dtos/create-admin-user.dto';
 import { UpdateAdminUserDto } from '../dtos/update-admin-user.dto';
 
-@Controller()
+@Controller('admins')
 @UseGuards(JwtAuthAdminGuard, AccessGuard)
-export class AdminUsersController {
+export class AdminsController {
     constructor(private readonly adminUsersService: AdminUsersService) {}
 
     @Get()

@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, FindOneOptions, Repository } from 'typeorm';
+import { DeleteResult, FindOneOptions, In, Repository } from 'typeorm';
 import { CategoryEntity } from '../entities/category.entity';
 import { ICategory } from '../interfaces/category.interface';
 import { CreateCategoryDto } from 'src/admin/admin-categories/dtos/create-category.dto';
+import { CreateCategorySchema } from 'src/admin/admin-categories/schemas/create-category.schema';
 
 @Injectable()
 export class CategoryRepository  {
@@ -20,8 +21,14 @@ export class CategoryRepository  {
         return this.repository.find();
     }
 
-    async create(dto: CreateCategoryDto): Promise<ICategory> {
-        return this.repository.create(dto); 
+    async getManyByIds(categoryIds: number[]): Promise<ICategory[]>  {
+        return this.repository.find({
+            where: { id: In(categoryIds) }
+        });
+    }
+
+    async create(category: CreateCategorySchema): Promise<ICategory> {
+        return this.repository.create(category); 
     }
 
     async save(category: ICategory): Promise<ICategory> {

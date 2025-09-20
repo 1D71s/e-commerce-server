@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { IAccessToken } from '../../../web/auth/dto/responses/tokens.response';
 import { compareSync } from 'bcrypt';
 import { AdminUserRepository } from '../../admin-users/repositories/admin-user.repository';
@@ -20,7 +20,7 @@ export class AdminAuthService {
         const admin = await this.adminUserRepository.getOne({ where: { email } }, true);
 
         if (!admin) {
-            throw new NotFoundException(ERROR_MESSAGE)
+            throw new UnauthorizedException(ERROR_MESSAGE)
         }
 
         if (!compareSync(password, admin.password)) {

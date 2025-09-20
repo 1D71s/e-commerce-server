@@ -6,7 +6,8 @@ import {
     Min, 
     MaxLength, 
     IsArray, 
-    IsUrl 
+    IsUrl, 
+    IsInt
 } from "class-validator";
 import { IProductDto } from "../interfaces/product-dto.interface";
 
@@ -31,8 +32,9 @@ export class CreateProductDto implements IProductDto {
     description?: string;
 
     @IsNotEmpty()
-    @IsNumber()
-    subcategoryId: number;
+    @IsArray()
+    @IsInt({ each: true, message: "Each category id must be an integer." })
+    categoryIds: number[];
 
     @IsOptional()
     @IsArray()

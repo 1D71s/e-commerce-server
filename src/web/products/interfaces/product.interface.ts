@@ -1,7 +1,7 @@
-import { ISubCategory } from "src/web/sub-categories/interfaces/sub-category.interface";
 import { IProductImages } from "./product-images.interface";
 import { IAdminUser } from '../../../admin/admin-users/interfaces/admin-user.interface';
 import { IProductProperties } from './product-properties.interface';
+import { ICategory } from "src/web/categories/interfaces/category.interface";
 
 export class IProduct {
     id: number;
@@ -11,6 +11,6 @@ export class IProduct {
     price: number;
     images: IProductImages[]
     description: string;
-    subCategory: ISubCategory;
     properties: IProductProperties;
+    category: ICategory[]
 }

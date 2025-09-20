@@ -3,6 +3,6 @@ export interface IProductDto {
     title: string;
     mainPhoto: string;
     description?: string;
-    subcategoryId: number;
+    categoryIds: number[];
     images?: string[];
 }

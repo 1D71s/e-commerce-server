@@ -2,6 +2,6 @@ import { IProduct } from "./product.interface";
 
 export interface IProductImages {
     id: number;
-    imageName: string;
+    imagePath: string;
     product: IProduct
 }

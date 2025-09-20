@@ -4,17 +4,20 @@ import {
     ManyToOne,
     JoinColumn,
     OneToMany,
+    JoinTable,
+    ManyToMany,
 } from 'typeorm';
 import { IProduct } from "../interfaces/product.interface";
 import { ProductImagesEntity } from "./product-images.entity";
 import { CartItemEntity } from "src/web/baskets/entities/cart-item.entity";
-import { SubcategoryEntity } from "src/web/sub-categories/entities/sub-category.entity";
 import { AdminUserEntity } from '../../../admin/admin-users/entities/admin.entity';
 import { ProductPropertyEntity } from './product-property.entity';
 import { BasicEntity } from '../../../database/entities/basic.entity';
+import { CategoryEntity } from 'src/web/categories/entities/category.entity';
 
 @Entity('products')
 export class ProductEntity extends BasicEntity implements IProduct {
+    
     @Column({ type: 'int', nullable: false })
     price: number;
 
@@ -31,10 +34,6 @@ export class ProductEntity extends BasicEntity implements IProduct {
     @Column({ nullable: true })
     description: string;
 
-    @ManyToOne(() => SubcategoryEntity, (subcategory) => subcategory.products)
-    @JoinColumn({ name: 'subcategoryId' })
-    subCategory: SubcategoryEntity;
-
     @OneToMany(() => ProductImagesEntity, (image) => image.product)
     images: ProductImagesEntity[];
     
@@ -43,4 +42,12 @@ export class ProductEntity extends BasicEntity implements IProduct {
 
     @OneToMany(() => ProductPropertyEntity, (property) => property.product)
     properties: ProductPropertyEntity;
+
+    @ManyToMany(() => CategoryEntity, { cascade: true })
+    @JoinTable({
+        name: "product_categories",
+        joinColumn: { name: "productId", referencedColumnName: "id" },
+        inverseJoinColumn: { name: "categoryId", referencedColumnName: "id" }
+    })
+    category: CategoryEntity[];
 }

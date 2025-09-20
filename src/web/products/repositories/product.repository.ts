@@ -30,7 +30,7 @@ export class ProductsRepository implements IProductsRepository {
         return await builder.build().getManyAndCount();
     }
 
-    async create(product: IProduct): Promise<IProduct> {
+    async create(product: Partial<IProduct>): Promise<IProduct> {
         return this.repository.create(product);
     }
 
