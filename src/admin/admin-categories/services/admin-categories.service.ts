@@ -54,7 +54,7 @@ export class AdminCategoriesService {
     }
 
     async updateCategory(dto: UpdateCategoryDto): Promise<ICategory> {
-        const { id, name } = dto;
+        const { id, name, parentId } = dto;
 
         const category = await this.categoryRepository.getOne({ where: { id } });
         if (!category) {
@@ -63,6 +63,24 @@ export class AdminCategoriesService {
 
         category.name = name;
 
+        if (parentId !== undefined) {
+            if (parentId === id) {
+                throw new BadRequestException('A category cannot be its own parent.');
+            }
+
+            if (parentId === null) {
+                category.parent = null;
+            } else {
+                const parent = await this.categoryRepository.getOne({ where: { id: parentId } });
+                if (!parent) {
+                    throw new NotFoundException('Parent category not found.');
+                }
+                category.parent = parent;
+            }
+        }
+
+        await this.categoryRepository.save(category);
+        
         return this.categoryRepository.save(category);
     }
 
