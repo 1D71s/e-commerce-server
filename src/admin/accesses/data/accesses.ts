@@ -17,10 +17,7 @@ export const accesses: IAccess[] = [
     { title: 'Create Category', category: AccessCategory.CATEGORIES, endpoint: Endpoint.CREATE_CATEGORY },
     { title: 'Update Category', category: AccessCategory.CATEGORIES, endpoint: Endpoint.UPDATE_CATEGORY },
     { title: 'Delete Category', category: AccessCategory.CATEGORIES, endpoint: Endpoint.DELETE_CATEGORY },
-
-    { title: 'Create Subcategory', category: AccessCategory.SUBCATEGORIES, endpoint: Endpoint.CREATE_SUB_CATEGORY },
-    { title: 'Update Subcategory', category: AccessCategory.SUBCATEGORIES, endpoint: Endpoint.UPDATE_SUB_CATEGORY },
-    { title: 'Delete Subcategory', category: AccessCategory.SUBCATEGORIES, endpoint: Endpoint.DELETE_SUB_CATEGORY },
+    { title: 'Get Categories', category: AccessCategory.CATEGORIES, endpoint: Endpoint.GET_CATEGORIES },
 
     { title: 'Create Product', category: AccessCategory.PRODUCTS, endpoint: Endpoint.CREATE_PRODUCT },
     { title: 'Update Product', category: AccessCategory.PRODUCTS, endpoint: Endpoint.UPDATE_PRODUCT },

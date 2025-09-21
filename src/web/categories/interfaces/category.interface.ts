@@ -1,4 +1,4 @@
-export class ICategory {
+export interface ICategory {
     id: number;
     name: string;
     parent?: ICategory;

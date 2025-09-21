@@ -13,10 +13,7 @@ export enum Endpoint {
     CREATE_CATEGORY = 'create-category',
     UPDATE_CATEGORY = 'update-category',
     DELETE_CATEGORY = 'delete-category',
-
-    CREATE_SUB_CATEGORY = 'create-sub-category',
-    UPDATE_SUB_CATEGORY = 'update-sub-category',
-    DELETE_SUB_CATEGORY = 'delete-sub-category',
+    GET_CATEGORIES = 'get-categories',
 
     CREATE_PRODUCT = 'create-product',
     UPDATE_PRODUCT = 'update-product',

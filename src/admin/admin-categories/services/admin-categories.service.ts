@@ -5,12 +5,21 @@ import { UpdateCategoryDto } from '../dtos/update-category.dto';
 import { ICategory } from 'src/web/categories/interfaces/category.interface';
 import { CategoryRepository } from 'src/web/categories/repositories/category.repository';
 import { CreateCategorySchema } from '../schemas/create-category.schema';
+import { In } from 'typeorm';
 
 @Injectable()
 export class AdminCategoriesService {
     constructor(
         private readonly categoryRepository: CategoryRepository,
     ) {}
+
+    async getAll(parentId?: number): Promise<ICategory[]> {
+        const where = parentId !== undefined ? { parent: { id: parentId } } : {};
+        return this.categoryRepository.getAll({
+            where,
+            relations: ['parent'],
+        });
+    }
 
     async createCategory(dto: CreateCategoryDto): Promise<ICategory> {
         const { name, parentId } = dto;
@@ -57,25 +66,21 @@ export class AdminCategoriesService {
         return this.categoryRepository.save(category);
     }
 
-    async removeCategory(categoryId: number): Promise<IMessage> {
-        const category = await this.categoryRepository.getOne({
-            where: { id: categoryId },
-            relations: ['subcategories'],
+    async removeCategories(categoryIds: number[]): Promise<IMessage> {
+        const categories = await this.categoryRepository.getAll({
+            where: { id: In(categoryIds) },
         });
 
-        if (!category) {
-            throw new NotFoundException(`Category with ID ${categoryId} not found.`);
+        if (categories.length === 0) {
+            throw new NotFoundException(
+                `No categories found for provided IDs: ${categoryIds.join(', ')}`,
+            );
         }
-    
-        const deleteResult = await this.categoryRepository.remove(category.id);
-        if (!deleteResult) {
-            throw new InternalServerErrorException('An error occurred while deleting the category.');
-        }
-    
-        return { message: `Category with ID ${categoryId} has been successfully deleted.` };
-    }
 
-    async getAll(): Promise<ICategory[]> {
-        return this.categoryRepository.getAll();
+        await this.categoryRepository.removeByIds(categoryIds);
+
+        return {
+            message: `Categories with IDs [${categoryIds.join(', ')}] have been successfully deleted.`,
+        };
     }
 }

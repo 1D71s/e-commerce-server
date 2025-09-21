@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, FindOneOptions, In, Repository } from 'typeorm';
+import { DeleteResult, FindManyOptions, FindOneOptions, In, Repository } from 'typeorm';
 import { CategoryEntity } from '../entities/category.entity';
 import { ICategory } from '../interfaces/category.interface';
-import { CreateCategoryDto } from 'src/admin/admin-categories/dtos/create-category.dto';
 import { CreateCategorySchema } from 'src/admin/admin-categories/schemas/create-category.schema';
 
 @Injectable()
@@ -17,8 +16,8 @@ export class CategoryRepository  {
         return this.repository.findOne(options);
     }
 
-    async getAll(): Promise<ICategory[]> {
-        return this.repository.find();
+    async getAll(options?: FindManyOptions<ICategory>): Promise<ICategory[]> {
+        return this.repository.find(options);
     }
 
     async getManyByIds(categoryIds: number[]): Promise<ICategory[]>  {
@@ -37,5 +36,9 @@ export class CategoryRepository  {
 
     async remove(id: number): Promise<DeleteResult> {
         return this.repository.delete(id);
+    }
+
+    async removeByIds(ids: number[]): Promise<DeleteResult> {
+        return this.repository.delete({ id: In(ids) });
     }
 }
