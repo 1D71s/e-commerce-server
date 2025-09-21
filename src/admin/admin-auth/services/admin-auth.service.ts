@@ -14,6 +14,16 @@ export class AdminAuthService {
         private readonly jwtService: JwtService,
     ) {}
 
+    async verify(user: IAdminJwtPayload): Promise<AdminUserEntity> {
+        const admin = await this.adminUserRepository.getOne({ where: { id: user.id } });
+
+        if (!admin) {
+            throw new UnauthorizedException();
+        }
+
+        return admin;
+    }
+
     async login(dto: LoginAdminDto): Promise<IAccessToken> {
         const { email, password } = dto;
         const ERROR_MESSAGE = 'Incorrect email or password.';
