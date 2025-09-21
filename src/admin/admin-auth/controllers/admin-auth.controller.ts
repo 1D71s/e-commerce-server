@@ -2,7 +2,7 @@ import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { AdminAuthService } from '../services/admin-auth.service';
 import { LoginAdminDto } from '../dtos/login-admin.dto';
 import { IAccessToken } from '../../../web/auth/dto/responses/tokens.response';
-import { Throttle } from '@nestjs/throttler';
+import { SkipThrottle, Throttle } from '@nestjs/throttler';
 import { JwtAuthAdminGuard } from '../guards/auth.admin.guard';
 import { User } from 'src/common/decorators/user.decorator';
 import { IAdminJwtPayload } from '../interfaces/admin-jwt-payload.interface';
@@ -18,7 +18,7 @@ export class AdminAuthController {
         return this.adminAuthService.login(dto);
     }
 
-    @Throttle({ default: { limit: 3, ttl: 60000 } })
+    @SkipThrottle()
     @UseGuards(JwtAuthAdminGuard)
     @Get('verify')
     async verify(@User() user: IAdminJwtPayload): Promise<AdminUserEntity>  {
