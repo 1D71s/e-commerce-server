@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { AdminCategoriesService } from '../services/admin-categories.service';
 import { CreateCategoryDto } from '../dtos/create-category.dto';
 import { IMessage } from 'src/common/dto/responses/message.response';

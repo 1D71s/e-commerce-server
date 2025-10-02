@@ -19,13 +19,14 @@ export class ProductsRepository implements IProductsRepository {
     }
 
     async findManyByFilters(dto: GetProductsFiltersDto): Promise<[ProductEntity[], number]> {
-        const queryBuilder = this.repository.createQueryBuilder('product');
+        const queryBuilder = this.repository.createQueryBuilder('product')
+            .leftJoinAndSelect('product.category', 'category'); // 👈 додаємо підтягання категорій
 
         const builder = new ProductsQueryBuilder(queryBuilder)
-          .withSubCategory(dto.subCategoryId)
-          .withSearch(dto.search)
-          .withPriceRange(dto.priceMin, dto.priceMax)
-          .withPagination(dto.skip, dto.take);
+            .withSubCategory(dto.сategoryId)
+            .withSearch(dto.search)
+            .withPriceRange(dto.priceMin, dto.priceMax)
+            .withPagination(dto.skip, dto.take);
 
         return await builder.build().getManyAndCount();
     }

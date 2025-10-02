@@ -22,12 +22,9 @@ export class AdminCategoriesService {
     }
 
     async createCategory(dto: CreateCategoryDto): Promise<ICategory> {
-        const { name, parentId } = dto;
+        const { name, parentId, image } = dto;
 
-        const existingCategory = await this.categoryRepository.getOne({
-            where: { name },
-        });
-        
+        const existingCategory = await this.categoryRepository.getOne({ where: { name } });
         if (existingCategory) {
             throw new ConflictException('Category with this name already exists.');
         }
@@ -35,9 +32,7 @@ export class AdminCategoriesService {
         let parent: ICategory = null;
 
         if (parentId) {
-            parent = await this.categoryRepository.getOne({
-                where: { id: parentId },
-            });
+            parent = await this.categoryRepository.getOne({ where: { id: parentId } });
             if (!parent) {
                 throw new NotFoundException('Parent category not found.');
             }
@@ -48,8 +43,11 @@ export class AdminCategoriesService {
             parent,
         };
 
-        const newCategory = await this.categoryRepository.create(schema);
+        if (image) {
+            schema.image = image
+        }
 
+        const newCategory = await this.categoryRepository.create(schema);
         return this.categoryRepository.save(newCategory);
     }
 

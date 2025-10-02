@@ -8,6 +8,9 @@ export class CategoryEntity extends BasicEntity implements ICategory {
     @Column({ type: 'varchar', length: 255, unique: true })
     name: string;
 
+    @Column({ type: 'varchar', length: 255, unique: true, nullable: true })
+    image: string
+
     @ManyToMany(() => ProductEntity, (product) => product.category)
     products: ProductEntity[];
 
