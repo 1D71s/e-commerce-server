@@ -1,4 +1,4 @@
-import { Entity, Column, ManyToOne, JoinColumn, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn, ManyToMany, JoinTable, OneToOne } from 'typeorm';
 import { ProductEntity } from "./product.entity";
 import { BasicEntity } from '../../../database/entities/basic.entity';
 import { IProductProperties } from '../interfaces/product-properties.interface';
@@ -18,7 +18,6 @@ export class ProductPropertyEntity extends BasicEntity implements IProductProper
     })
     sizes: ProductSizeEntity[];
 
-    @ManyToOne(() => ProductEntity, (product) => product.properties, { onDelete: 'CASCADE' })
-    @JoinColumn({ name: 'productId' })
-    product: IProduct;
+    @OneToOne(() => ProductEntity, (product) => product.properties, { onDelete: 'CASCADE' })
+    product: ProductEntity;
 }

@@ -5,4 +5,5 @@ export interface IProductDto {
     description?: string;
     categoryIds: number[];
     images?: string[];
+    color?: string;
 }

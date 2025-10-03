@@ -22,6 +22,7 @@ export enum Endpoint {
     CREATE_PRODUCT_SIZE = 'create-product-size',
     GET_PRODUCT_SIZES = 'get-product-sizes',
     DELETE_PRODUCT_SIZE = 'delete-product-size',
+    UPDATE_PRODUCT_SIZE = 'update-product-size',
 
     GET_ADMINS = 'get-admins',
     CREATE_ADMIN = 'create-admin',

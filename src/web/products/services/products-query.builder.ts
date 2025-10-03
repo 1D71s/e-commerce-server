@@ -4,9 +4,9 @@ import { ProductEntity } from '../entities/product.entity';
 export class ProductsQueryBuilder {
     constructor(private readonly queryBuilder: SelectQueryBuilder<ProductEntity>) {}
 
-    withSubCategory(subCategoryId?: number): this {
-        if (subCategoryId) {
-            this.queryBuilder.andWhere('product.subCategory.id = :subCategoryId', { subCategoryId });
+    withSubCategory(categoryId?: number): this {
+        if (categoryId) {
+            this.queryBuilder.andWhere('product.category.id = :categoryId', { categoryId });
         }
         return this;
     }

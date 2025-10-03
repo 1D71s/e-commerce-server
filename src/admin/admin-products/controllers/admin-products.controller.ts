@@ -15,6 +15,10 @@ import { CreateProductSizeDto } from '../dtos/create-product-size.dto';
 import { IGetManyPagination } from 'src/common/dto/responses/get-many-pagination.response';
 import { GetProductsFiltersDto } from 'src/web/products/dtos/requests/get-products-filters.dto';
 import { IProduct } from 'src/web/products/interfaces/product.interface';
+import { DeleteProductsDto } from '../dtos/delete-products.dto';
+import { SkipThrottle } from '@nestjs/throttler';
+import { DeleteSizesDto } from '../dtos/delete-sizes.dto';
+import { UpdateProductSizeDto } from '../dtos/update-product-size.dto';
 
 @Controller()
 @UseGuards(JwtAuthAdminGuard, AccessGuard)
@@ -25,14 +29,15 @@ export class AdminProductsController {
     ) {}
 
     @Get()
+    @SkipThrottle()
     async getManyByFilters(@Query() dto: GetProductsFiltersDto): Promise<IGetManyPagination<IProduct>>  {
         return this.adminProductsService.getManyByFilters(dto);
     }
 
-    @Delete(':id')
+    @Delete()
     @EndpointAccess(Endpoint.DELETE_PRODUCT)
-    async deleteProduct(@Param('id') id: number): Promise<IMessage> {
-        return await this.adminProductsService.deleteProduct(id); 
+    async deleteProducts(@Body() dto: DeleteProductsDto): Promise<IMessage> {
+        return this.adminProductsService.deleteProducts(dto.ids);
     }
 
     @Put(':id')
@@ -48,6 +53,7 @@ export class AdminProductsController {
     }
 
     @Get('sizes')
+    @SkipThrottle()
     @EndpointAccess(Endpoint.GET_PRODUCT_SIZES)
     async getAllSizes(): Promise<IProductSize[]> {
         return this.adminProductSizeService.getProductSizes();
@@ -59,9 +65,15 @@ export class AdminProductsController {
         return this.adminProductSizeService.createSize(dto)
     }
 
-    @Delete('size/:id')
+    @Delete('size')
     @EndpointAccess(Endpoint.DELETE_PRODUCT_SIZE)
-    async deleteProductSize(@Param('id') id: number): Promise<IMessage> {
-        return await this.adminProductSizeService.deleteSize(id);
+    async deleteProductSize(@Body() dto: DeleteSizesDto): Promise<IMessage> {
+        return await this.adminProductSizeService.deleteSize(dto.ids);
+    }
+
+    @Put('size/:id')
+    @EndpointAccess(Endpoint.UPDATE_PRODUCT_SIZE)
+    async updateProductSize(@Param('id') id: number, @Body() dto: UpdateProductSizeDto): Promise<IMessage> {
+        return await this.adminProductSizeService.updateSize(id, dto);
     }
 }

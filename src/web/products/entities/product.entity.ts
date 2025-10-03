@@ -6,6 +6,7 @@ import {
     OneToMany,
     JoinTable,
     ManyToMany,
+    OneToOne,
 } from 'typeorm';
 import { IProduct } from "../interfaces/product.interface";
 import { ProductImagesEntity } from "./product-images.entity";
@@ -40,7 +41,8 @@ export class ProductEntity extends BasicEntity implements IProduct {
     @OneToMany(() => CartItemEntity, (cartItem) => cartItem.product)
     cartItems: CartItemEntity[];
 
-    @OneToMany(() => ProductPropertyEntity, (property) => property.product)
+    @OneToOne(() => ProductPropertyEntity, (property) => property.product, { cascade: true })
+    @JoinColumn({ name: 'propertyId' }) 
     properties: ProductPropertyEntity;
 
     @ManyToMany(() => CategoryEntity, { cascade: true })
