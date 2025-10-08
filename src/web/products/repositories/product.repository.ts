@@ -29,7 +29,8 @@ export class ProductsRepository implements IProductsRepository {
             .leftJoinAndSelect('product.images', 'images')
             .leftJoinAndSelect('product.properties', 'properties')
             .leftJoinAndSelect('properties.sizes', 'sizes')      
-            .leftJoinAndSelect('properties.colors', 'colors');
+            .leftJoinAndSelect('properties.colors', 'colors')
+            .leftJoinAndSelect('properties.propertyItems', 'propertyItems')
 
         const builder = new ProductsQueryBuilder(queryBuilder)
             .withSubCategory(dto.сategoryId)

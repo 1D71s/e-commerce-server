@@ -48,4 +48,18 @@ export class CreateProductDto implements IProductDto {
     @IsOptional()
     @IsArray()
     colors?: string[];
+
+    @IsOptional()
+    @IsArray()
+    propertyItems?: PropertyItemsDto[];
+}
+
+export class PropertyItemsDto {
+    @IsNotEmpty()
+    @IsString()
+    key: string;
+
+    @IsNotEmpty()
+    @IsString()
+    value: string;
 }

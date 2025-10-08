@@ -1,5 +1,4 @@
-import { Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { ProductEntity } from './product.entity';
+import { Column, Entity, ManyToOne } from 'typeorm';
 import { BasicEntity } from '../../../database/entities/basic.entity';
 import { IProductProperties } from '../interfaces/product-properties.interface';
 import { IProductPropertyItem } from '../interfaces/product-property-item.interface';
@@ -13,6 +12,6 @@ export class ProductPropertyItemEntity extends BasicEntity implements IProductPr
     @Column()
     value: string;
 
-    @ManyToOne(() => ProductPropertyEntity, (product) => product.sizes)
+    @ManyToOne(() => ProductPropertyEntity, (product) => product.propertyItems)
     productsProperty: IProductProperties;
 }

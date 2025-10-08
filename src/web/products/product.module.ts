@@ -11,6 +11,7 @@ import { ProductPropertyEntity } from './entities/product-property.entity';
 import { ProductSizeRepository } from './repositories/product-size.repository';
 import { ProductColorEntity } from './entities/product-color.entity';
 import { ProductColorRepository } from './repositories/product-color.repository';
+import { ProductPropertyItemEntity } from './entities/product-property-item.entity';
 
 @Module({
     imports: [
@@ -19,7 +20,8 @@ import { ProductColorRepository } from './repositories/product-color.repository'
             ProductImagesEntity,
             ProductSizeEntity,
             ProductPropertyEntity,
-            ProductColorEntity
+            ProductColorEntity,
+            ProductPropertyItemEntity
         ])
     ],
     controllers: [

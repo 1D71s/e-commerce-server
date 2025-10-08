@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { In } from 'typeorm';
 import { IMessage } from 'src/common/dto/responses/message.response';
 import { UpdateProductDto } from '../dtos/update-product.dto';
-import { CreateProductDto } from '../dtos/create-product.dto';
+import { CreateProductDto, PropertyItemsDto } from '../dtos/create-product.dto';
 import { IProductImages } from 'src/web/products/interfaces/product-images.interface';
 import { IProduct } from 'src/web/products/interfaces/product.interface';
 import { ProductImagesRepository } from 'src/web/products/repositories/product-images.repository';
@@ -10,7 +10,6 @@ import { ProductsRepository } from 'src/web/products/repositories/product.reposi
 import { ProductSizeRepository } from '../../../web/products/repositories/product-size.repository';
 import { StorageService } from '../../../storage/services/storage.service';
 import { AdminUserRepository } from '../../admin-users/repositories/admin-user.repository';
-import { IProductSize } from 'src/web/products/interfaces/product-size.interface';
 import { CategoryRepository } from 'src/web/categories/repositories/category.repository';
 import { IGetManyPagination } from 'src/common/dto/responses/get-many-pagination.response';
 import { GetProductsFiltersDto } from 'src/web/products/dtos/requests/get-products-filters.dto';
@@ -18,6 +17,7 @@ import { ProductPropertyEntity } from 'src/web/products/entities/product-propert
 import { ProductEntity } from 'src/web/products/entities/product.entity';
 import { ProductColorEntity } from 'src/web/products/entities/product-color.entity';
 import { ProductImagesEntity } from 'src/web/products/entities/product-images.entity';
+import { ProductPropertyItemEntity } from 'src/web/products/entities/product-property-item.entity';
 
 @Injectable()
 export class AdminProductsService {
@@ -102,7 +102,7 @@ export class AdminProductsService {
     }
 
     async createProduct(dto: CreateProductDto, adminId: number): Promise<IMessage> {
-        const { price, title, mainPhoto, description, categoryIds, images, sizes, colors } = dto;
+        const { price, title, mainPhoto, description, categoryIds, images, sizes, colors, propertyItems } = dto;
 
         const creator = await this.adminUserRepository.getOne({ where: { id: adminId } });
         if (!creator) throw new NotFoundException('User not found');
@@ -112,6 +112,7 @@ export class AdminProductsService {
 
         const productImages = await this.handleImages(images ?? []);
         const productColors = await this.handleColors(colors ?? []);
+        const productPropertyItems = await this.handlePropertyItems(propertyItems ?? []);
 
         const productSizes = sizes?.length
             ? await this.productSizeRepository.getMany({ where: { id: In(sizes) } })
@@ -130,6 +131,7 @@ export class AdminProductsService {
         property.product = product;
         property.colors = productColors;
         property.sizes = productSizes;
+        property.propertyItems = productPropertyItems
 
         product.properties = property;
 
@@ -146,14 +148,6 @@ export class AdminProductsService {
         });
     }
 
-    private async handleSizes(sizes: number[]): Promise<IProductSize[]> {
-        if (!sizes.length) return [];
-
-        return await this.productSizeRepository.getMany({
-            where: { id: In(sizes) },
-        });
-    }
-
     private async handleColors(colorValues: string[]): Promise<ProductColorEntity[]> {
         if (!colorValues.length) return [];
 
@@ -161,6 +155,17 @@ export class AdminProductsService {
             const color = new ProductColorEntity();
             color.value = value;
             return color;
+        });
+    }
+
+    private async handlePropertyItems(propertyItems: PropertyItemsDto[]): Promise<ProductPropertyItemEntity[]> {
+        if (!propertyItems.length) return [];
+
+        return propertyItems.map(item => {
+            const propertyItem = new ProductPropertyItemEntity();
+            propertyItem.key = item.key
+            propertyItem.value = item.value;
+            return propertyItem;
         });
     }
 
