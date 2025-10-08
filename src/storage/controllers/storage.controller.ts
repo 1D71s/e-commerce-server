@@ -7,6 +7,7 @@ import { AccessGuard } from '../../admin/accesses/guards/access.guard';
 import { EndpointAccess } from '../../admin/accesses/guards/endpoint-access.guard';
 import { Endpoint } from '../../admin/accesses/enums/endpoint.enum';
 import { JwtAuthAdminGuard } from '../../admin/admin-auth/guards/auth.admin.guard';
+import { SkipThrottle } from '@nestjs/throttler';
 
 @Controller('storage')
 export class StorageController {
@@ -21,6 +22,7 @@ export class StorageController {
     }
 
     @Get('image/:fileName')
+    @SkipThrottle()
     async getFile(@Param('fileName') fileName: string, @Res() res: Response): Promise<void> {
         return this.filesService.getFile(fileName, res)
     }

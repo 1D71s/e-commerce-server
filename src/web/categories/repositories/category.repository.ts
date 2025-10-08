@@ -20,7 +20,7 @@ export class CategoryRepository  {
         return this.repository.find(options);
     }
 
-    async getManyByIds(categoryIds: number[]): Promise<ICategory[]>  {
+    async getManyByIds(categoryIds: number[]): Promise<CategoryEntity[]>  {
         return this.repository.find({
             where: { id: In(categoryIds) }
         });

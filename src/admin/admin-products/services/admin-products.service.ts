@@ -16,6 +16,8 @@ import { IGetManyPagination } from 'src/common/dto/responses/get-many-pagination
 import { GetProductsFiltersDto } from 'src/web/products/dtos/requests/get-products-filters.dto';
 import { ProductPropertyEntity } from 'src/web/products/entities/product-property.entity';
 import { ProductEntity } from 'src/web/products/entities/product.entity';
+import { ProductColorEntity } from 'src/web/products/entities/product-color.entity';
+import { ProductImagesEntity } from 'src/web/products/entities/product-images.entity';
 
 @Injectable()
 export class AdminProductsService {
@@ -25,7 +27,7 @@ export class AdminProductsService {
         private readonly adminUserRepository: AdminUserRepository,
         private readonly productSizeRepository: ProductSizeRepository,
         private readonly storageService: StorageService,
-        private readonly categoryRepository: CategoryRepository
+        private readonly categoryRepository: CategoryRepository,
     ) {}
 
     async getManyByFilters(dto: GetProductsFiltersDto): Promise<IGetManyPagination<IProduct>> {
@@ -55,8 +57,11 @@ export class AdminProductsService {
 
                 if (product.images?.length) {
                     tasks.push(
-                        ...product.images.map((image) =>
-                        this.storageService.deleteFile(image.imagePath).catch(() => null)
+                        ...product.images.map(image =>
+                            Promise.all([
+                                this.storageService.deleteFile(image.imagePath).catch(() => null),
+                                this.productImagesRepository.delete(image)
+                            ])
                         )
                     );
                 }
@@ -68,6 +73,18 @@ export class AdminProductsService {
         await this.productRepository.deleteMany(products);
 
         return { message: `${products.length} products deleted successfully` };
+    }
+
+    async deleteProductImage(id: number): Promise<IMessage> {
+        const image = await this.productImagesRepository.getOne({
+            where: { id }
+        })
+
+        if (!image) throw new NotFoundException()
+
+        await this.storageService.deleteFile(image.imagePath)
+        await this.productImagesRepository.delete(image as ProductImagesEntity)
+        return { message: `images deleted successfully` };
     }
 
     async updateProduct(id: number, updateProductDto: UpdateProductDto): Promise<IMessage> {
@@ -85,35 +102,22 @@ export class AdminProductsService {
     }
 
     async createProduct(dto: CreateProductDto, adminId: number): Promise<IMessage> {
-        const { 
-            price, 
-            title, 
-            mainPhoto, 
-            description, 
-            categoryIds,
-            images, 
-            sizes,
-            color
-        } = dto;
+        const { price, title, mainPhoto, description, categoryIds, images, sizes, colors } = dto;
 
-        const creator = await this.adminUserRepository.getOne({
-            where: { id: adminId },
-        })
-
-        if (!creator) {
-            throw new NotFoundException('User not found');
-        }
+        const creator = await this.adminUserRepository.getOne({ where: { id: adminId } });
+        if (!creator) throw new NotFoundException('User not found');
 
         const categories = await this.categoryRepository.getManyByIds(categoryIds);
+        if (!categories?.length) throw new NotFoundException('Subcategory not found');
 
-        if (!categories) {
-            throw new NotFoundException('Subcategory not found');
-        }
+        const productImages = await this.handleImages(images ?? []);
+        const productColors = await this.handleColors(colors ?? []);
 
-        const productImages = await this.handleImages(images ?? []) || [];
-        const productSizes = await this.handleSizes(sizes ?? []) || [];
+        const productSizes = sizes?.length
+            ? await this.productSizeRepository.getMany({ where: { id: In(sizes) } })
+            : [];
 
-        const product = new IProduct();
+        const product = new ProductEntity();
         product.price = price;
         product.title = title;
         product.mainPhoto = mainPhoto;
@@ -123,17 +127,18 @@ export class AdminProductsService {
         product.category = categories;
 
         const property = new ProductPropertyEntity();
+        property.product = product;
+        property.colors = productColors;
         property.sizes = productSizes;
-        property.color = color;
-        property.product = product as ProductEntity;
 
         product.properties = property;
 
         await this.productRepository.save(product);
+
         return { message: 'Product created successfully' };
     }
 
-    private async handleImages(images: string[]): Promise<IProductImages[]> {
+    private async handleImages(images: string[]): Promise<ProductImagesEntity[]> {
         if (!images.length) return [];
         
         return await this.productImagesRepository.getMany({
@@ -147,5 +152,37 @@ export class AdminProductsService {
         return await this.productSizeRepository.getMany({
             where: { id: In(sizes) },
         });
+    }
+
+    private async handleColors(colorValues: string[]): Promise<ProductColorEntity[]> {
+        if (!colorValues.length) return [];
+
+        return colorValues.map(value => {
+            const color = new ProductColorEntity();
+            color.value = value;
+            return color;
+        });
+    }
+
+    async getProductImages(productId: number): Promise<IProductImages[]> {
+        return this.productImagesRepository.getMany({
+            where: { product: { id: productId } }
+        })
+    }
+
+    async addImagesToProduct(productId: number, imagePaths: string[]) {
+        const product = await this.productRepository.getOne({ where: { id: productId } });
+        if (!product) throw new NotFoundException('Product not found');
+
+        const imagesEntities: ProductImagesEntity[] = imagePaths.map(path => {
+            const img = new ProductImagesEntity();
+            img.imagePath = path; 
+            img.product = product;
+            return img;
+        });
+
+        await this.productImagesRepository.saveMany(imagesEntities);
+
+        return { message: `${imagesEntities.length} images added to product` };
     }
 }

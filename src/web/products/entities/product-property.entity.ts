@@ -1,14 +1,18 @@
-import { Entity, Column, ManyToOne, JoinColumn, ManyToMany, JoinTable, OneToOne } from 'typeorm';
+import { Entity, Column, ManyToMany, JoinTable, OneToOne, OneToMany } from 'typeorm';
 import { ProductEntity } from "./product.entity";
 import { BasicEntity } from '../../../database/entities/basic.entity';
 import { IProductProperties } from '../interfaces/product-properties.interface';
 import { ProductSizeEntity } from './product-size.entity';
-import { IProduct } from '../interfaces/product.interface';
+import { ProductColorEntity } from './product-color.entity';
 
 @Entity('product_properties')
 export class ProductPropertyEntity extends BasicEntity implements IProductProperties {
-    @Column({ type: 'varchar', length: 100, nullable: true })
-    color: string;
+
+    @OneToMany(() => ProductColorEntity, (color) => color.productProperty, {
+        cascade: true,
+        onDelete: 'CASCADE',
+    })
+    colors: ProductColorEntity[];
 
     @ManyToMany(() => ProductSizeEntity, (size) => size.productProperties)
     @JoinTable({

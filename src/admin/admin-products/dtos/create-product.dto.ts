@@ -46,6 +46,6 @@ export class CreateProductDto implements IProductDto {
     sizes?: number[]
 
     @IsOptional()
-    @IsString()
-    color?: string;
+    @IsArray()
+    colors?: string[];
 }

@@ -25,13 +25,16 @@ export class ProductsRepository implements IProductsRepository {
     async findManyByFilters(dto: GetProductsFiltersDto): Promise<[ProductEntity[], number]> {
         const queryBuilder = this.repository.createQueryBuilder('product')
             .leftJoinAndSelect('product.category', 'category')
+            .leftJoinAndSelect('product.admin', 'admin')
+            .leftJoinAndSelect('product.images', 'images')
             .leftJoinAndSelect('product.properties', 'properties')
+            .leftJoinAndSelect('properties.sizes', 'sizes')      
+            .leftJoinAndSelect('properties.colors', 'colors');
 
         const builder = new ProductsQueryBuilder(queryBuilder)
             .withSubCategory(dto.сategoryId)
             .withSearch(dto.search)
             .withPriceRange(dto.priceMin, dto.priceMax)
-            .withPagination(dto.skip, dto.take);
 
         return await builder.build().getManyAndCount();
     }

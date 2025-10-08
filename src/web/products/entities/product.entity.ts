@@ -35,7 +35,7 @@ export class ProductEntity extends BasicEntity implements IProduct {
     @Column({ nullable: true })
     description: string;
 
-    @OneToMany(() => ProductImagesEntity, (image) => image.product)
+    @OneToMany(() => ProductImagesEntity, (image) => image.product, { cascade: true })
     images: ProductImagesEntity[];
     
     @OneToMany(() => CartItemEntity, (cartItem) => cartItem.product)

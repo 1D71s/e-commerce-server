@@ -30,4 +30,11 @@ export class ProductImagesRepository {
     async delete(image: ProductImagesEntity): Promise<void> {
         await this.repository.remove(image);
     }
+
+    async saveMany(images: IProductImages[]): Promise<ProductImagesEntity[]> {
+        if (!images || images.length === 0) return [];
+        const entities = images.map(img => this.repository.create(img));
+        
+        return this.repository.save(entities);
+    }
 }

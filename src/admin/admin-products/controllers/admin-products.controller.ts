@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { CreateProductDto } from '../dtos/create-product.dto';
 import { AdminProductsService } from '../services/admin-products.service';
 import { IMessage } from 'src/common/dto/responses/message.response';
@@ -19,6 +19,8 @@ import { DeleteProductsDto } from '../dtos/delete-products.dto';
 import { SkipThrottle } from '@nestjs/throttler';
 import { DeleteSizesDto } from '../dtos/delete-sizes.dto';
 import { UpdateProductSizeDto } from '../dtos/update-product-size.dto';
+import { AddProductImagesDto } from '../dtos/add-product-images.dto';
+import { IProductImages } from 'src/web/products/interfaces/product-images.interface';
 
 @Controller()
 @UseGuards(JwtAuthAdminGuard, AccessGuard)
@@ -75,5 +77,26 @@ export class AdminProductsController {
     @EndpointAccess(Endpoint.UPDATE_PRODUCT_SIZE)
     async updateProductSize(@Param('id') id: number, @Body() dto: UpdateProductSizeDto): Promise<IMessage> {
         return await this.adminProductSizeService.updateSize(id, dto);
+    }
+
+    @Get('images/:id')
+    @SkipThrottle()
+    async getProductImages(@Param('id') id: number): Promise<IProductImages[]> {
+        return this.adminProductsService.getProductImages(id);
+    }
+
+    @Delete('images/:id')
+    async deleteProductImage(@Param('id') id: number): Promise<IMessage> {
+        return this.adminProductsService.deleteProductImage(id);
+    }
+
+    @Post(':id/images')
+    @UseGuards(JwtAuthAdminGuard, AccessGuard)
+    @EndpointAccess(Endpoint.UPLOAD_FILE)
+    async addProductImages(
+        @Param('id', ParseIntPipe) productId: number,
+        @Body() dto: AddProductImagesDto,
+    ) {
+        return this.adminProductsService.addImagesToProduct(productId, dto.imagePaths);
     }
 }

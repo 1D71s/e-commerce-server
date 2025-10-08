@@ -1,6 +1,5 @@
 import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { IProductSize } from '../interfaces/product-size.interface';
-import { ProductEntity } from './product.entity';
 import { BasicEntity } from '../../../database/entities/basic.entity';
 import { ProductPropertyEntity } from './product-property.entity';
 
